@@ -6,21 +6,21 @@
 \usepackage{shortcuts}
 \usepackage{acronym}
 
+
 \school{\unibo}
-\programme{Corso di Laurea [Magistrale?] in Ingegneria e Scienze Informatiche}
-\title{Fancy Title}
-\author{Candidate Name}
+\programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
+\title{ClientShield: Implementazione di un Servizio Windows per la Sicurezza DNS}
+\author{Federico Diotallevi}
 \date{\today}
-\subject{Supervisor's course name}
-\supervisor{Prof. Supervisor Here}
-\cosupervisor{Dott. CoSupervisor 1}
-\morecosupervisor{Dott. CoSupervisor 2}
-\session{I}
-\academicyear{2022-2023}
+\subject{Programmazione ad Oggetti}
+\supervisor{Mirko Viroli}
+%\cosupervisor{Nicolas Farabegoli}
+\session{IV}
+\academicyear{2023-2024}
 
 % Definition of acronyms
-\acrodef{IoT}{Internet of Thing}
-\acrodef{vm}[VM]{Virtual Machine}
+\acrodef{DoH}{Dns over Https}
+\acrodef{DNS}{Domain Name System}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -29,12 +29,20 @@
 
 \frontmatter\frontispiece
 
-\begin{abstract}	
-Max 2000 characters, strict.
+\begin{abstract}
+
+Lo sviluppo della tecnologia cresce sempre più velocemente e, con essa, anche le minacce che gli utenti in rete corrono sempre più.
+Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibiità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
+
+L'obiettivo di questo progetto è lo sviluppo di un software che filtri tutte le richieste web effettuate da un dispositivo, in modo che un amministratore di rete possa eventualmente decidere delle categorie di siti di cui bloccare l'accesso.
+Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il DNS Filtering.
+
+Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendale.
+Ciò ha facilita la gestione delle categorie e dell'effettivo filtraggio dns, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server DNS di FlashStart.
 \end{abstract}
 
-\begin{dedication} % this is optional
-Optional. Max a few lines.
+\begin{dedication}
+Optional dedication.
 \end{dedication}
 
 %----------------------------------------------------------------------------------------

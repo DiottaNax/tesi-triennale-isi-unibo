@@ -31,14 +31,16 @@
 
 \begin{abstract}
 
-Lo sviluppo della tecnologia cresce sempre più velocemente e, con essa, anche le minacce che gli utenti in rete corrono sempre più.
+Lo sviluppo della tecnologia cresce sempre più velocemente e, con essa, anche i rischi che gli utenti corrono semplicemente navigando in rete.
 Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibiità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
 
-L'obiettivo di questo progetto è lo sviluppo di un software che filtri tutte le richieste web effettuate da un dispositivo, in modo che un amministratore di rete possa eventualmente decidere delle categorie di siti di cui bloccare l'accesso.
+L'obiettivo di questo progetto è lo sviluppo di un software che sia facilmente installabile su un dispositivo Windows e filtri tutte le richieste web effettuate.
+Si vuole offrire la possibilità ad un un amministratore di rete di attivare e disattivare la protezione del dispositivo da remoto, decidendo eventualmente anche quali categorie di siti bloccare.
+
 Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il DNS Filtering.
 
 Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendale.
-Ciò ha facilita la gestione delle categorie e dell'effettivo filtraggio dns, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server DNS di FlashStart.
+Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio DNS, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
 \end{abstract}
 
 \begin{dedication}
@@ -54,29 +56,21 @@ Optional dedication.
 \mainmatter
 
 %----------------------------------------------------------------------------------------
-\chapter{Introduction}
+\chapter{Introduzione}
 \label{chap:introduction}
 %----------------------------------------------------------------------------------------
 
-Write your intro here.
-\sidenote{Add sidenotes in this way. They are named after the author of the thesis}
+Navigare in rete è senz'altro una delle attività più diffuse al giorno d'oggi in tutto il mondo.
+La quantità di informazioni a cui si può accedere è pressoché infinita e soprattutto a disposizione di chiunque.
 
-You can use acronyms that your defined previously,
-such as \ac{IoT}.
-%
-If you use acronyms twice,
-they will be written in full only once
-(indeed, you can mention the \ac{IoT} now without it being fully explained).
-%
-In some cases, you may need a plural form of the acronym.
-%
-For instance,
-that you are discussing \acp{vm},
-you may need both \ac{vm} and \acp{vm}.
+Nonostante si possa essere portati a credere che le nuove generazioni siano sempre meno soggette  ad attacchi informatici, essendo sempre più abituati ad utilizzare strumenti tecnologici, la realtà si dimostra molto diversa.
+Secondo \cite{unipol2022}, infatti, le violazioni digitali colpiscono soprattutto la Generazione Z.
+Non solo, l'articolo evidenzia che gli italiani ch ehanno subito violazioni digitali sono circa 10 milioni e che il rischio ha una frequenza maggiore tra chi utilizza Social Network molto frequentemente.
+
+
+
 
 \paragraph{Structure of the Thesis}
-
-\note{At the end, describe the structure of the paper}
 
 \chapter{State of the art}
 
@@ -95,6 +89,7 @@ I suggest referencing stuff as follows: \cref{fig:random-image} or \Cref{fig:ran
 
 You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
 
+
 \lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
 
 \section{Fancy formulas here}
@@ -104,8 +99,6 @@ You may also put some code snippet (which is NOT float by default), eg: \cref{ls
 %----------------------------------------------------------------------------------------
 
 \backmatter
-
-\nocite{*} % Remove this as soon as you have the first citation
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}

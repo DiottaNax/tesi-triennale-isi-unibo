@@ -29,7 +29,7 @@
 
 \pagestyle{fancy}
 
-\newcommand{\acknowledgementsname}{Acknowledgements}
+\newcommand{\acknowledgementsname}{Riconoscimenti}
 
 \newcommand{\school}[1]{\def\theschool{#1}}
 \newcommand{\programme}[1]{\def\theprogramme{#1}}
@@ -40,12 +40,13 @@
 \newcommand{\session}[1]{\def\thesession{#1}}
 \newcommand{\academicyear}[1]{\def\theacademicyear{#1}}
 
+\newcommand{\abstractname}{Sommario}
 \newenvironment{abstract}{\chapter*{\centering\abstractname}\addcontentsline{toc}{chapter}{\abstractname}}{} 
 \newenvironment{acknowledgements}{\chapter*{\acknowledgementsname}}{} 
 \newenvironment{dedication}{\chapter*{}\begin{flushright}\itshape}{\normalfont\end{flushright}}
 \newenvironment{inlinelist}{\begin{enumerate*}[label=\emph{(\roman{*})}]}{\end{enumerate*}}
 
-\newcommand{\chapterWithoutNumber}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
+\newcommand{\chapterWithoutNumber}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}\markboth{\MakeUppercase{#1}}{\MakeUppercase{#1}} }
 
 \let\oldbibliography\bibliography
 \renewcommand{\bibliography}[1]{

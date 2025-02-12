@@ -1,10 +1,15 @@
+% !TeX root = thesis-main.tex
 \documentclass[12pt,a4paper,openright,twoside]{book}
+\usepackage[hyperfootnotes=false]{hyperref}
+\usepackage[italian,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{disi-thesis}
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
 \usepackage{acronym}
+\usepackage{float}
+\usepackage{pgfplots}
 
 
 \school{\unibo}
@@ -13,33 +18,36 @@
 \author{Federico Diotallevi}
 \date{\today}
 \subject{Programmazione ad Oggetti}
-\supervisor{Mirko Viroli}
+\supervisor{Prof.\ Viroli Mirko}
 %\cosupervisor{Nicolas Farabegoli}
 \session{IV}
-\academicyear{2023-2024}
+\academicyear{2023\ -\ 2024}
 
 % Definition of acronyms
 \acrodef{DoH}{Dns over Https}
 \acrodef{DNS}{Domain Name System}
+\acrodef{AI}{Intelligenza Artificiale}
+
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
 
 \begin{document}
 
-\frontmatter\frontispiece
+\frontmatter\frontispiece\
 
+\renewcommand{\abstractname}{Sommario}
 \begin{abstract}
 
 Lo sviluppo della tecnologia cresce sempre più velocemente e, con essa, anche i rischi che gli utenti corrono semplicemente navigando in rete.
-Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibiità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
+Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibilità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
 
 L'obiettivo di questo progetto è lo sviluppo di un software che sia facilmente installabile su un dispositivo Windows e filtri tutte le richieste web effettuate.
 Si vuole offrire la possibilità ad un un amministratore di rete di attivare e disattivare la protezione del dispositivo da remoto, decidendo eventualmente anche quali categorie di siti bloccare.
 
-Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il DNS Filtering.
+Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il filtraggio DNS.
 
-Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendale.
+Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendali.
 Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio DNS, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
 \end{abstract}
 
@@ -49,39 +57,69 @@ Optional dedication.
 
 %----------------------------------------------------------------------------------------
 \tableofcontents   
-\listoffigures     % (optional) comment if empty
-\lstlistoflistings % (optional) comment if empty
+%\listoffigures     % (optional) comment if empty
+%\lstlistoflistings\ % (optional) comment if empty
 %----------------------------------------------------------------------------------------
 
-\mainmatter
+\mainmatter\
 
 %----------------------------------------------------------------------------------------
-\chapter{Introduzione}
-\label{chap:introduction}
+\chapterWithoutNumber{Introduzione}\label{chap:introduzione}
+
+
+
 %----------------------------------------------------------------------------------------
 
 Navigare in rete è senz'altro una delle attività più diffuse al giorno d'oggi in tutto il mondo.
-La quantità di informazioni a cui si può accedere è pressoché infinita e soprattutto a disposizione di chiunque.
+La quantità di informazioni a cui si può accedere è pressoché infinita e, soprattutto, a disposizione di chiunque.
 
-Nonostante si possa essere portati a credere che le nuove generazioni siano sempre meno soggette  ad attacchi informatici, essendo sempre più abituati ad utilizzare strumenti tecnologici, la realtà si dimostra molto diversa.
-Secondo \cite{unipol2022}, infatti, le violazioni digitali colpiscono soprattutto la Generazione Z.
-Non solo, l'articolo evidenzia che gli italiani ch ehanno subito violazioni digitali sono circa 10 milioni e che il rischio ha una frequenza maggiore tra chi utilizza Social Network molto frequentemente.
+La digitalizzazione delle risorse è ormai diventata essenziale per qualsiasi realtà, dal settore pubblico a quello privato.
+Tuttavia, tale pratica espone inevitabilmente al rischio che documenti,
+dati e informazioni sensibili diventino obiettivo di attacchi informatici.
+A conferma di ciò, il recente rapporto \cite{clusit2024-sicurezza} evidenzia come gli attacchi informatici gravi a livello globale siano passati,
+in media, da 4.5 a 9 al giorno in soli cinque anni.
+Secondo il rapporto, gli incidenti critici sono aumentati dal 47\% all'81\% del totale e,
+in Italia, il 58\% degli attacchi è costituito da malware, phishing e social engineering.
+
+Con il recente e rapidissimo sviluppo delle \ac{AI} il campo dell'Internet Filtering ha subito un vera e propria rivoluzione.
+I nuovi modelli di Machine Learning sono capaci di analizzare e identificare con precisione siti malevoli,
+grazie anche ai giganteschi volumi di dati di cui dispongono.
+Questi sistemi riescono a riconoscere tecniche di phishing e malware avanzate, anche quando progettate per eludere i metodi di rilevamento tradizionali.
+
+Questa tesi si colloca in questo contesto e si propone l'obiettivo di sviluppare un software prototipale per il filtraggio internet sul computer di installazione.
+Il lavoro illustrerà dettagliatamente tutte le fasi di analisi, progettazione e sviluppo del progetto.
+
+Data la necessità di interazione con componenti specifici del sistema operativo,
+il software è stato sviluppato esclusivamente per Windows, con l'obiettivo di creare un servizio di sistema.
+
+\paragraph{Struttura della Tesi}
+
+La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi della realizzazione del progetto, in particolare:
+
+\begin{itemize}
+
+    \item \textbf{Capitolo 1 (Contesto)}: in questo capitolo si tratta in maniera approfondita il contesto aziendale e il problema affrontato dalla tesi.
+    Viene analizzato il software attualmente presente in FlashStart e le motivazioni che inducono alla necessità di un nuovo sviluppo.
+    
+    \item \textbf{Capitolo 2 (Requisiti)}: in questo capitolo vengono affrontati casi d'uso e requisiti, analizzando il funzionamento e la percezione del progetto dal punto di vista dell'utente.
+    
+    \item \textbf{Capitolo 3 (Tecnologie)}:
+    in questo capitolo vengono riportate le diverse tecnologie utilizzate e le scelte che hanno portato al loro impiego nel progetto.
+    
+    \item \textbf{Capitolo 4 (Analisi e progettazione)}:
+    in questo capitolo viene descritta la fase di analisi e progettazione del sistema,
+    illustrandone in particolare l'architettura e i pattern utilizzati, evidenziando in che modo il software ne tragga guadagno.
+
+\end{itemize}
 
 
-
-
-\paragraph{Structure of the Thesis}
-
-\chapter{State of the art}
-
-I suggest referencing stuff as follows: \cref{fig:random-image} or \Cref{fig:random-image}
+\chapter{Contesto}
 
 \begin{figure}
     \centering
     \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
     \caption{Some random image}
-    \label{fig:random-image}
-\end{figure}
+\end{figure}\label{fig:random-image}
 
 \section{Some cool topic}
 
@@ -98,7 +136,7 @@ You may also put some code snippet (which is NOT float by default), eg: \cref{ls
 % BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\backmatter
+\backmatter\
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}

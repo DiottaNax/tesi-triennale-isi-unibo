@@ -36,6 +36,7 @@
 \acrodef{DNS}{Domain Name System}
 \acrodef{AI}{Intelligenza Artificiale}
 \acrodef{PoC}{Proof of Concept}
+\acrodef{AGID}{Agenzia per l'Italia Digitale}
 
 
 
@@ -106,7 +107,7 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 
 \begin{itemize}
 
-    \item \textbf{Capitolo 1 (Contesto)}: in questo capitolo si tratta in maniera approfondita il contesto aziendale e il problema affrontato dalla tesi.
+    \item \textbf{Capitolo 1 (Contesto)}: in questo capitolo si tratta in maniera approfondita il problema affrontato dalla tesi.
     Viene analizzato il software attualmente presente in FlashStart e le motivazioni che inducono alla necessità di un nuovo sviluppo.
     
     \item \textbf{Capitolo 2 (Requisiti)}: in questo capitolo vengono affrontati casi d'uso e requisiti, analizzando il funzionamento e la percezione del progetto dal punto di vista dell'utente.
@@ -139,6 +140,20 @@ Il filtraggio \ac{DNS} si basa proprio su questo principio: quando si accede ad 
 FlashStart offre un servizio \ac{DNS} configurabile, attraverso cui è possibile definire delle categorie di siti da bloccare.
 I server dell'azienda aggiornano continuamente la lista delle categorie bloccate, facendo largo uso di \acf{AI} per garantire rapido aggiornamento (in risposta alla nascita di nuovi siti) ed alta precisione.
 Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, tenta di accedere ad un sito appartenente ad una delle categorie bloccate, il \ac{DNS} risponderà alla richiesta di risoluzione del nome con l'indirizzo di una pagina indicante i motivi del blocco, al posto di quella richiesta.
+
+\section{Obiettivi del Progetto}
+
+Nel periodo tra il 2019 e 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
+Se da una parte tale pratica rappresenta un'opportunità per i lavoratori, che ne guadagnano in flessibilità, dall'altra espone l'azienda a nuovi rischi.
+A dimostrazione di ciò, proprio nel 2020 è stato emanato dall'\acf{AGID} il vademecum \cite{AgID2020}, cioè una serie di undici raccomandazioni che offrono linee guida per garantire la sicurezza del lavoro da remoto.
+
+In effetti, un dispositivo che esce dall'azienda, ambiente potenzialmente controllato e protetto, diventa un rischio.
+Un dipendente potrebbe involontariamente navigare in siti di phishing e malware o connettersi a reti Wi-Fi infette, esponendo l'azienda al rischio di furti o compromissione di dati.
+Obiettivo fondante di questa tesi è lo sviluppo di un software facilmente installabile su un computer Windows, che consenta una protezione efficace e completa ai dispositivi desktop che escono dalla rete aziendale.
+Tale progetto dovrà filtrare la connessione dell'endpoint remoto, bloccando l'accesso a siti pericolosi, come virus e frodi, ma anche a contenuti indesiderati e distrazioni sul lavoro, come social networks o videogiochi.
+
+\section{Contesto Aziendale}
+
 
  
 

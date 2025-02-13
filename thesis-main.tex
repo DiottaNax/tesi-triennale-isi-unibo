@@ -1,7 +1,8 @@
+% !TeX spellcheck = it_IT
 % !TeX root = thesis-main.tex
 \documentclass[12pt,a4paper,openright,twoside]{book}
+\usepackage[italian]{babel}
 \usepackage[hyperfootnotes=false]{hyperref}
-\usepackage[italian,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{disi-thesis}
 \usepackage{code-lstlistings}
@@ -10,6 +11,13 @@
 \usepackage{acronym}
 \usepackage{float}
 \usepackage{pgfplots}
+
+\newcommand{\acknowledgementsname}{Riconoscimenti}
+\renewcommand{\chaptername}{Capitolo} % Per i capitoli
+\renewcommand{\bibname}{Bibliografia} % Per la bibliografia
+\renewcommand{\contentsname}{Indice}  % Per il sommario
+\renewcommand{\listfigurename}{Elenco delle figure}
+\renewcommand{\listtablename}{Elenco delle tabelle}
 
 
 \school{\unibo}
@@ -24,9 +32,10 @@
 \academicyear{2023\ -\ 2024}
 
 % Definition of acronyms
-\acrodef{DoH}{Dns over Https}
+\acrodef{DoH}{DNS over Https}
 \acrodef{DNS}{Domain Name System}
 \acrodef{AI}{Intelligenza Artificiale}
+\acrodef{PoC}{Proof of Concept}
 
 
 
@@ -45,10 +54,10 @@ Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibili
 L'obiettivo di questo progetto è lo sviluppo di un software che sia facilmente installabile su un dispositivo Windows e filtri tutte le richieste web effettuate.
 Si vuole offrire la possibilità ad un un amministratore di rete di attivare e disattivare la protezione del dispositivo da remoto, decidendo eventualmente anche quali categorie di siti bloccare.
 
-Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il filtraggio DNS.
+Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il filtraggio \acf{DNS}.
 
 Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendali.
-Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio DNS, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
+Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio \ac{DNS}, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
 \end{abstract}
 
 \begin{dedication}
@@ -64,10 +73,9 @@ Optional dedication.
 \mainmatter\
 
 %----------------------------------------------------------------------------------------
-\chapterWithoutNumber{Introduzione}\label{chap:introduzione}
-
-
-
+\chapterWithoutNumber{Introduzione}
+\phantomsection % to makr label work
+\label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
 Navigare in rete è senz'altro una delle attività più diffuse al giorno d'oggi in tutto il mondo.
@@ -114,23 +122,43 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 
 
 \chapter{Contesto}
+\label{chap:contesto}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
-    \caption{Some random image}
-\end{figure}\label{fig:random-image}
+\section{Internet Filtering}
 
-\section{Some cool topic}
+Il caso di studio oggetto di questa tesi è un software prototipale, che si inserisce nell'ambito dell'Internet Filtering.
+Per Internet Filtering si intende un sistema di monitorazione, controllo e limitazione dell'accesso alle risorse online, basato su criteri predefiniti.
 
-\chapter{Contribution}
+Una tecnologia di questo tipo risulta particolarmente utile ad aziende, scuole ed enti pubblici.
+Tramite questa pratica è infatti possibile effettuare controlli sul contenuto delle pagine web, limitando o impedendo l'accesso a siti contenenti malware o, eventualmente, contenuti indesiderati (ad esempio siti di scommesse, pornografia, droghe...).
+Risulta evidente fin da subito che per garantire un filtraggio di contenuti preciso ed efficace è necessaria un'attenta analisi delle pagine web, per evitare di correre il rischio di impedirne immotivatamente l'accesso.
 
-You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
+Questa tesi è svolta come progetto in collaborazione con FlashStart, leader italiana per quanto riguarda il filtraggio \acf{DNS}.
+Un server \ac{DNS} è un sistema che permette di tradurre nomi di domini leggibili da un uomo, in indirizzi interpretabili da dei computer per connettersi tra loro.
+Il filtraggio \ac{DNS} si basa proprio su questo principio: quando si accede ad un sito web attraverso un browser qualsiasi, il computer interrogherà un server \ac{DNS} per ottenere l'indirizzo attraverso cui sia possibile accedere al sito.
+FlashStart offre un servizio \ac{DNS} configurabile, attraverso cui è possibile definire delle categorie di siti da bloccare.
+I server dell'azienda aggiornano continuamente la lista delle categorie bloccate, facendo largo uso di \acf{AI} per garantire rapido aggiornamento (in risposta alla nascita di nuovi siti) ed alta precisione.
+Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, tenta di accedere ad un sito appartenente ad una delle categorie bloccate, il \ac{DNS} risponderà alla richiesta di risoluzione del nome con l'indirizzo di una pagina indicante i motivi del blocco, al posto di quella richiesta.
+
+ 
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
+%    \caption{Some random image}
+%\end{figure}\label{fig:random-image}
+
+%\section{Some cool topic}
+
+%\chapter{Contribution}
 
 
-\lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
+%You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
 
-\section{Fancy formulas here}
+
+%\lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
+
+%\section{Fancy formulas here}
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

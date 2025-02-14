@@ -19,6 +19,10 @@
 \renewcommand{\listfigurename}{Elenco delle figure}
 \renewcommand{\listtablename}{Elenco delle tabelle}
 
+\makeatletter
+\renewcommand{\AC@placelabel}[1]{} % avoid acronym label before definition
+\makeatother
+
 
 \school{\unibo}
 \programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
@@ -32,13 +36,14 @@
 \academicyear{2023\ -\ 2024}
 
 % Definition of acronyms
-\acrodef{DoH}{DNS over Https}
+\acrodef{DoH}{DNS over HTTPS}
 \acrodef{DNS}{Domain Name System}
 \acrodef{AI}{Intelligenza Artificiale}
 \acrodef{PoC}{Proof of Concept}
 \acrodef{AGID}{Agenzia per l'Italia Digitale}
 \acrodef{VPN}{Virtual Private Network}
 \acrodef{HTTPS}{HTTP Secure}
+\acrodef{ISP}{Internet Service Provider}
 
 
 
@@ -145,6 +150,20 @@ Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, t
 
 \section{Obiettivi del Progetto}
 
+Il filtraggio \ac{DNS} può essere implementato in diverse modalità:
+
+\begin{itemize}
+	\item \textbf{A livello di rete:} applicato direttamente dal \ac{ISP}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
+	\newline \textit{Esempio: un'azienda utilizza un servizio DNS filtrato fornito dal proprio ISP per impedire l'accesso a siti di phishing su tutta la rete aziendale.}
+	
+	\item \textbf{A livello di gateway (router):} il router funge da punto di controllo, utilizzando un server DNS con filtraggio per impedire l'accesso a contenuti non autorizzati. Tutti i dispositivi connessi alla rete beneficiano automaticamente della protezione.  
+	\newline \textit{Esempio: un istituto scolastico configura il proprio router con OpenDNS per bloccare siti per adulti e social network sugli studenti.}
+	
+	\item \textbf{A livello di endpoint:} il filtraggio DNS è applicato direttamente sui dispositivi tramite configurazione manuale o software specifici, garantendo protezione anche fuori dalla rete aziendale o domestica.  
+	\newline \textit{Esempio: un dipendente in smart working utilizza un client DNS sicuro sul proprio laptop per proteggersi dalle minacce mentre lavora da reti Wi-Fi pubbliche.}
+\end{itemize}
+
+
 Nel periodo tra il 2019 e 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
 Se da una parte tale pratica rappresenta un'opportunità per i lavoratori, che ne guadagnano in flessibilità, dall'altra espone l'azienda a nuovi rischi.
 A dimostrazione di ciò, proprio nel 2020 è stato emanato dall'\acf{AGID} il vademecum \cite{AgID2020}, cioè una serie di undici raccomandazioni che offrono linee guida per garantire la sicurezza del lavoro da remoto.
@@ -163,7 +182,7 @@ Allo stato dell'arte il prodotto utilizza una \acf{VPN}, attraverso cui il softw
 Ciò accade perché la \ac{VPN} consente di far apparire l'endpoint remoto come connesso alla rete locale aziendale, mascherandone l'indirizzo IP e consentendogli dunque di utilizzare il \ac{DNS} aziendale per applicare le stesse strategie di filtraggio.
 
 L'esigenza di aggiornamento del software deriva dall'allineamento di FlashStart al nuovo protocollo \acf{DoH}, descritto in \cite{RFC8484}.
-Tale protocollo, infatti, si presta meglio ad un'azienda che offre filtraggio \ac{DNS} rispetto ad una classica \ac{VPN}. \ac{DoH} garantisce la riservatezza sfruttando il protocollo sicuro \ac{HTTPS},
+Tale protocollo, infatti, si presta meglio ad un'azienda che offre filtraggio \ac{DNS} rispetto ad una classica \ac{VPN}. \ac{DoH} garantisce la riservatezza sfruttando la crittografia asimmetrica implementata dal protocollo \ac{HTTPS}, per garantire autenticazione, confidenzialità e integrità delle richieste \ac{DNS}.
 
 %\begin{figure}
 %    \centering

@@ -2,15 +2,15 @@
 % !TeX root = thesis-main.tex
 \documentclass[12pt,a4paper,openright,twoside]{book}
 \usepackage[italian]{babel}
-\usepackage[hyperfootnotes=false]{hyperref}
+\usepackage{acronym}
 \usepackage[utf8]{inputenc}
 \usepackage{disi-thesis}
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
-\usepackage{acronym}
 \usepackage{float}
 \usepackage{pgfplots}
+\usepackage[hyperfootnotes=false]{hyperref}
 
 \newcommand{\acknowledgementsname}{Riconoscimenti}
 \renewcommand{\chaptername}{Capitolo} % Per i capitoli
@@ -18,10 +18,6 @@
 \renewcommand{\contentsname}{Indice}  % Per il sommario
 \renewcommand{\listfigurename}{Elenco delle figure}
 \renewcommand{\listtablename}{Elenco delle tabelle}
-
-\makeatletter
-\renewcommand{\AC@placelabel}[1]{} % avoid acronym label before definition
-\makeatother
 
 
 \school{\unibo}
@@ -44,6 +40,8 @@
 \acrodef{VPN}{Virtual Private Network}
 \acrodef{HTTPS}{HTTP Secure}
 \acrodef{ISP}{Internet Service Provider}
+
+\acresetall
 
 
 
@@ -153,15 +151,19 @@ Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, t
 Il filtraggio \ac{DNS} può essere implementato in diverse modalità:
 
 \begin{itemize}
-	\item \textbf{A livello di rete:} applicato direttamente dal \ac{ISP}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
-	\newline \textit{Esempio: un'azienda utilizza un servizio DNS filtrato fornito dal proprio ISP per impedire l'accesso a siti di phishing su tutta la rete aziendale.}
+	\item \textbf{A livello di rete:} applicato direttamente dal \ac{ISP}~\ref{isp-footnote}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
+	\newline \textit{Esempio: un'azienda utilizza un servizio \ac{DNS} filtrato fornito dal proprio \ac{ISP} per impedire l'accesso a siti malevoli su tutta la rete aziendale.}
 	
-	\item \textbf{A livello di gateway (router):} il router funge da punto di controllo, utilizzando un server DNS con filtraggio per impedire l'accesso a contenuti non autorizzati. Tutti i dispositivi connessi alla rete beneficiano automaticamente della protezione.  
+	\item \textbf{A livello di router:} il router funge da punto di controllo, utilizzando un server DNS con filtraggio per impedire l'accesso a contenuti non autorizzati. Tutti i dispositivi connessi alla rete beneficiano automaticamente della protezione.  
 	\newline \textit{Esempio: un istituto scolastico configura il proprio router con OpenDNS per bloccare siti per adulti e social network sugli studenti.}
 	
 	\item \textbf{A livello di endpoint:} il filtraggio DNS è applicato direttamente sui dispositivi tramite configurazione manuale o software specifici, garantendo protezione anche fuori dalla rete aziendale o domestica.  
 	\newline \textit{Esempio: un dipendente in smart working utilizza un client DNS sicuro sul proprio laptop per proteggersi dalle minacce mentre lavora da reti Wi-Fi pubbliche.}
 \end{itemize}
+
+\footnote{
+	\label{isp-footnote}
+	Un \ac{ISP} è un fornitore che offre connettività alla rete, consentendo ai suoi utenti di accedere a Internet. Gli ISP possono anche fornire servizi aggiuntivi, come, appunto, sicurezza informatica e filtraggio.}
 
 
 Nel periodo tra il 2019 e 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.

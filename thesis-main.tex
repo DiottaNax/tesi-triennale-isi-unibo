@@ -146,7 +146,7 @@ Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, t
 
 \section{Obiettivi del Progetto}
 
-Il filtraggio \gls{DNS} può essere implementato in diverse modalità:
+Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguito le principali:
 
 \begin{itemize}
 	\item \textbf{A livello di rete:} applicato direttamente dall'\gls{ISP}\footref{foot:isp-footnote}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
@@ -162,7 +162,7 @@ Il filtraggio \gls{DNS} può essere implementato in diverse modalità:
 \footnote{\label{foot:isp-footnote}
 	Un \gls{ISP} è un fornitore che offre connettività alla rete, consentendo ai suoi utenti di accedere a Internet. Gli ISP possono anche fornire servizi aggiuntivi, come, appunto, sicurezza informatica e filtraggio.}
 
-
+Questo progetto prende in esame la terza tipologia delle suddette modalità di protezione \gls{DNS}, ossia il filtraggio a livello di endpoint.
 Nel periodo tra il 2019 e 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
 Se da una parte tale pratica rappresenta un'opportunità per i lavoratori, che ne guadagnano in flessibilità, dall'altra espone l'azienda a nuovi rischi.
 A dimostrazione di ciò, proprio nel 2020 è stato emanato dall'\gls{AGID} il vademecum \cite{AgID2020}, cioè una serie di undici raccomandazioni che offrono linee guida per garantire la sicurezza del lavoro da remoto.
@@ -177,29 +177,22 @@ Tale progetto dovrà filtrare la connessione dell'endpoint remoto, bloccando l'a
 FlashStart offre già un software di protezione da malware e contenuti indesiderati dedicato ad endpoint remoti: ClientShield.
 Tale prodotto rappresenta un'estensione del filtro aziendale, fornendo lo stesso tipo di protezione, configurabile attraverso la medesima piattaforma cloud da parte di un amministratore di rete.
 
-Allo stato dell'arte il prodotto utilizza una \gls{VPN}, attraverso cui il software genera un "tunnel \gls{DNS}" sicuro, che instrada le richieste effettuate dall'endpoint attraverso la rete aziendale.
-Ciò accade perché la \gls{VPN} consente di far apparire l'endpoint remoto come connesso alla rete locale aziendale, mascherandone l'indirizzo IP e consentendogli dunque di utilizzare il \gls{DNS} aziendale per applicare le stesse strategie di filtraggio.
+Allo stato dell'arte il prodotto utilizza una \gls{VPN}, per stabilire una comunicazione sicura con i server di FlashStart.
+Ciò garantisce che il dispositivo possa inviare e ricevere non soltanto le informazioni sul prodotto, ma anche richieste \gls{DNS}, generalmente trasmesse in chiaro, in modo totalmente criptato.
 
-L'esigenza di aggiornamento del software deriva dall'allineamento di FlashStart al nuovo protocollo \gls{DoH}, descritto in \cite{RFC8484}.
-Tale protocollo, infatti, si presta meglio ad un'azienda che offre filtraggio \gls{DNS} rispetto ad una classica \gls{VPN}. \gls{DoH} garantisce la riservatezza sfruttando la crittografia asimmetrica implementata dal protocollo \gls{HTTPS}, per garantire autenticazione, confidenzialità e integrità delle richieste \gls{DNS}.
+L'esigenza di aggiornamento del software deriva dalla volontà di FlashStart di integrare il protocollo \gls{DoH}, descritto in \cite{RFC8484}, nei suoi prodotti.
+Rispetto ad una classica \gls{VPN}, \gls{DoH} sfrutta la crittografia asimmetrica, implementata dal protocollo \gls{HTTPS}, per garantire autenticazione, confidenzialità e integrità delle richieste \gls{DNS}.
 
-%\begin{figure}
-%    \centering
-%    \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
-%    \caption{Some random image}
-%\end{figure}\label{fig:random-image}
+Il vantaggio che FlashStart trae da entrambi i protocolli è essenzialmente il medesimo: proteggere le comunicazioni \gls{DNS} tramite la crittografia, evitando la possibilità di attacchi dovuti alla trasparenza delle informazioni.
+La differenza principale tra i due approcci è che una \gls{VPN} cripta il traffico di rete nella sua interezza, mascherando anche l'indirizzo IP del dispositivo, mentre \gls{DoH} si concentra esclusivamente sulla protezione delle richieste \gls{DNS}.
 
-%\section{Some cool topic}
+Per un'azienda come FlashStart, specializzata in filtraggio \gls{DNS}, mascherare l'indirizzo IP di un endpoint non è una funzionalità totalmente rilevante per l'erogazione del suo servizio.
+L'adozione del protocollo \gls{DoH} consente quindi di ottenere la riservatezza necessaria per la comunicazione con il \gls{DNS}, eliminando la necessità di un'infrastruttura \gls{VPN} dedicata e riducendo l'overhead complessivo del sistema.
 
-%\chapter{Contribution}
+La novità principale del software prototipale illustrato in questa tesi, è dunque quella di fornire una soluzione per la transizione dalla tecnologia \gls{VPN}, all'adozione del protocollo \gls{DoH}.
+Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali più adatte garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
 
-
-%You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
-
-
-%\lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
-
-%\section{Fancy formulas here}
+\chapter{Requisiti}
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

@@ -201,17 +201,30 @@ Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni ar
 \section{Scopo del sistema e analisi del dominio}
 
 L'analisi del dominio è un punto chiave per quanto riguarda lo sviluppo software.
-Tale fase permette di comprendere il contesto in cui il software opera, chi sono gli attori principali e quali sono i loro scopi.
-In questo progetto l'analisi del dominio è risultata molto rapida e semplice, in quanto il prodotto è stato accordato con un'azienda interna al settore informatico.
+Tale fase permette di comprendere il contesto in cui il software opera, gli attori principali ed i loro scopi.
+In questo progetto l'analisi del dominio è risultata molto rapida e diretta, in quanto il prodotto è stato sviluppato con un'azienda del settore informatico, permettendo fin da subito l'utilizzo di un linguaggio tecnico.
 
 Come già introdotto nella sezione \ref{sec:obiettivi-progetto}, il contesto in cui opera l'applicazione è quello della sicurezza informatica.
 Il fine ultimo del software è di fornire una soluzione di filtraggio \gls{DNS} avanzata, che consenta un'efficace protezione ad un dispositivo che naviga al di fuori di una rete protetta.
 L'interazione col sistema coinvolgerà in particolare:
 
 \begin{itemize}
-	\item \textbf{Utente finale}: cioè l'utilizzatore del dispositivo da proteggere, il quale navigherà normalmente il web, inviando naturalmente richieste \gls{DNS}
-\end{itemize}
+	\item \textbf{Utente finale:} cioè l'utilizzatore del dispositivo da proteggere, il quale navigherà normalmente in internet, utilizzando un browser ed inviando naturalmente richieste \gls{DNS}.
+	
+	\item \textbf{Amministratore di rete:} il cliente FlashStart, responsabile dell'installazione e configurazione del software sul dispositivo attraverso la chiave fornita dalla piattaforma cloud. 
+	Tramite l'applicativo online potrà gestire le policy di filtraggio, aggiungendo o rimuovendo siti specifici o intere categorie di contenuti da bloccare.
 
+	\item \textbf{Server FlashStart:} riceveranno le richieste \gls{DNS} effettuate dal dispositivo protetto e le risolveranno applicando i filtri configurati dall'amministratore di rete.
+\end{itemize}
+Il software dovrà operare in modo tale da rendersi completamente trasparente all'utente finale, il quale non dovrebbe percepire alcuna differenza durante la normale navigazione. L'unico momento in cui sarà consapevole della presenza di un filtro, sarà durante il tentativo di accesso ad un contenuto online bloccato, in tal caso visualizzerà invece una schermata di blocco riportante eventualmente le motivazioni.
+
+\section{Requisiti funzionali}
+
+Il progetto mira allo sviluppo di un'implementazione prototipale.
+Ciò implica che le funzionalità del software trattate in questa tesi rappresentano un sottogruppo delle funzionalità totali del sistema.
+Tuttavia, poiché il risultato dello studio mira a costruire una solida base per una futura implementazione business di ClientShield, di seguito verranno elencati i requisiti del software nella sua interezza.
+La comprensione dei requisiti nel loro complesso, infatti, permette di valutare fin da subito la possibilità di una futura integrazione delle funzioni aggiuntive, consentendo un'analisi più precisa.
+ 
 
 
 %----------------------------------------------------------------------------------------

@@ -21,6 +21,9 @@
 
 \glsdisablehyper
 
+\pagenumbering{roman}
+
+
 
 \school{\unibo}
 \programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
@@ -124,6 +127,8 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 
 \end{itemize}
 
+\pagenumbering{arabic}  % Numeri arabi (1, 2, 3, ...)
+\setcounter{page}{1}    % Riavvia la numerazione da 1
 
 \chapter{Contesto}
 \label{chap:contesto}
@@ -135,12 +140,13 @@ Per Internet Filtering si intende un sistema di monitorazione, controllo e limit
 
 Una tecnologia di questo tipo risulta particolarmente utile ad aziende, scuole ed enti pubblici.
 Tramite questa pratica è infatti possibile effettuare controlli sul contenuto delle pagine web, limitando o impedendo l'accesso a siti contenenti malware o, eventualmente, contenuti indesiderati (ad esempio siti di scommesse, pornografia, droghe...).
-Risulta evidente fin da subito che per garantire un filtraggio di contenuti preciso ed efficace è necessaria un'attenta analisi delle pagine web, per evitare di correre il rischio di impedirne immotivatamente l'accesso.
+Risulta evidente fin da subito che, per garantire un filtraggio di contenuti preciso ed efficace, sia necessaria un'attenta analisi delle pagine web, evitando di correre il rischio di impedirne immotivatamente l'accesso.
 
 Questa tesi è svolta come progetto in collaborazione con FlashStart, leader italiana per quanto riguarda il filtraggio \gls{DNS}.
 Un server \gls{DNS} è un sistema che permette di tradurre nomi di domini leggibili da un uomo, in indirizzi interpretabili da dei computer per connettersi tra loro.
-Il filtraggio \gls{DNS} si basa proprio su questo principio: quando si accede ad un sito web attraverso un browser qualsiasi, il computer interrogherà un server \gls{DNS} per ottenere l'indirizzo attraverso cui sia possibile accedere al sito.
-FlashStart offre un servizio \gls{DNS} configurabile, attraverso cui è possibile definire delle categorie di siti da bloccare.
+Il filtraggio si basa proprio su questo principio: quando si accede ad un sito web attraverso un browser qualsiasi, il computer interrogherà un server \gls{DNS} per ottenere l'indirizzo attraverso cui sia possibile accedere al sito.
+Con un'apposita configurazione, si può indurre il \gls{DNS} a bloccare la risoluzione di pagine web malevoli o riportanti contenuti non graditi.
+FlashStart offre un servizio \gls{DNS} configurabile, attraverso cui è possibile definire delle categorie di contenuti da bloccare.
 I server dell'azienda aggiornano continuamente la lista delle categorie bloccate, facendo largo uso di \gls{AI} per garantire rapido aggiornamento (in risposta alla nascita di nuovi siti) ed alta precisione.
 Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, tenta di accedere ad un sito appartenente ad una delle categorie bloccate, il \gls{DNS} risponderà alla richiesta di risoluzione del nome con l'indirizzo di una pagina indicante i motivi del blocco, al posto di quella richiesta.
 
@@ -156,21 +162,21 @@ Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguit
 	\newline \textit{Esempio: un istituto scolastico configura il proprio router con un DNS appositamente configurato per impedire l'accesso a siti per adulti e social network bloccandoli per gli studenti.}
 	
 	\item \textbf{A livello di endpoint:} il filtraggio DNS è applicato direttamente sui dispositivi tramite configurazione manuale o software specifici, garantendo protezione anche fuori dalla rete aziendale o domestica.  
-	\newline \textit{Esempio: un dipendente in che lavora da remoto utilizza un client DNS sicuro sul proprio laptop per proteggersi dalle minacce.}
+	\newline \textit{Esempio: un dipendente che lavora da remoto utilizza un client DNS sicuro sul proprio laptop per proteggersi dalle minacce.}
 \end{itemize}
 
 \footnote{\label{foot:isp-footnote}
 	Un \gls{ISP} è un fornitore che offre connettività alla rete, consentendo ai suoi utenti di accedere a Internet. Gli ISP possono anche fornire servizi aggiuntivi, come, appunto, sicurezza informatica e filtraggio.}
 
-Questo progetto prende in esame la terza tipologia delle suddette modalità di protezione \gls{DNS}, ossia il filtraggio a livello di endpoint.
-Nel periodo tra il 2019 e 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
+FlashStart offre prodotti per tutte le suddette modalità, tuttavia questo progetto prende in esame soltanto la terza tipologia di protezione \gls{DNS}, ossia il filtraggio a livello di endpoint.
+Nel periodo tra il 2019 e il 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
 Se da una parte tale pratica rappresenta un'opportunità per i lavoratori, che ne guadagnano in flessibilità, dall'altra espone l'azienda a nuovi rischi.
 A dimostrazione di ciò, proprio nel 2020 è stato emanato dall'\gls{AGID} il vademecum \cite{AgID2020}, cioè una serie di undici raccomandazioni che offrono linee guida per garantire la sicurezza del lavoro da remoto.
 
 In effetti, un dispositivo che esce dall'azienda, ambiente potenzialmente controllato e protetto, diventa un rischio.
 Un dipendente potrebbe involontariamente navigare in siti di phishing e malware o connettersi a reti Wi-Fi infette, esponendo l'azienda al rischio di furti o compromissione di dati.
 Obiettivo fondante di questa tesi è lo sviluppo di un software facilmente installabile su un computer Windows, che consenta una protezione efficace e completa ai dispositivi desktop che escono dalla rete aziendale.
-Tale progetto dovrà filtrare la connessione dell'endpoint remoto, bloccando l'accesso a siti pericolosi, come virus e frodi, ma anche a contenuti indesiderati e distrazioni sul lavoro, come social networks o videogiochi.
+Tale progetto dovrà filtrare la connessione dell'endpoint remoto, bloccando l'accesso a siti pericolosi, come virus e frodi, ma anche a contenuti indesiderati e distrazioni sul lavoro, come social network o videogiochi.
 
 \section{Contesto Aziendale}
 
@@ -190,7 +196,7 @@ Per un'azienda come FlashStart, specializzata in filtraggio \gls{DNS}, mascherar
 L'adozione del protocollo \gls{DoH} consente quindi di ottenere la riservatezza necessaria per la comunicazione con il \gls{DNS}, eliminando la necessità di un'infrastruttura \gls{VPN} dedicata e riducendo l'overhead complessivo del sistema.
 
 La novità principale del software prototipale illustrato in questa tesi, è dunque quella di fornire una soluzione per la transizione dalla tecnologia \gls{VPN}, all'adozione del protocollo \gls{DoH}.
-Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali più adatte garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
+Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali atte a garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
 
 \chapter{Requisiti}
 
@@ -198,7 +204,7 @@ Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni ar
 % BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\backmatter\
+\backmatter
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}

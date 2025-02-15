@@ -77,8 +77,6 @@ Optional dedication.
 %\lstlistoflistings\ % (optional) comment if empty
 %----------------------------------------------------------------------------------------
 
-\mainmatter\
-
 %----------------------------------------------------------------------------------------
 \chapterWithoutNumber{Introduzione}
 \phantomsection % to makr label work
@@ -127,8 +125,7 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 
 \end{itemize}
 
-\pagenumbering{arabic}  % Numeri arabi (1, 2, 3, ...)
-\setcounter{page}{1}    % Riavvia la numerazione da 1
+\mainmatter
 
 \chapter{Contesto}
 \label{chap:contesto}
@@ -151,6 +148,7 @@ I server dell'azienda aggiornano continuamente la lista delle categorie bloccate
 Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, tenta di accedere ad un sito appartenente ad una delle categorie bloccate, il \gls{DNS} risponderà alla richiesta di risoluzione del nome con l'indirizzo di una pagina indicante i motivi del blocco, al posto di quella richiesta.
 
 \section{Obiettivi del Progetto}
+\label{sec:obiettivi-progetto}
 
 Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguito le principali:
 
@@ -198,7 +196,23 @@ L'adozione del protocollo \gls{DoH} consente quindi di ottenere la riservatezza 
 La novità principale del software prototipale illustrato in questa tesi, è dunque quella di fornire una soluzione per la transizione dalla tecnologia \gls{VPN}, all'adozione del protocollo \gls{DoH}.
 Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali atte a garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
 
-\chapter{Requisiti}
+\chapter{Analisi dei Requisiti}
+
+\section{Scopo del sistema e analisi del dominio}
+
+L'analisi del dominio è un punto chiave per quanto riguarda lo sviluppo software.
+Tale fase permette di comprendere il contesto in cui il software opera, chi sono gli attori principali e quali sono i loro scopi.
+In questo progetto l'analisi del dominio è risultata molto rapida e semplice, in quanto il prodotto è stato accordato con un'azienda interna al settore informatico.
+
+Come già introdotto nella sezione \ref{sec:obiettivi-progetto}, il contesto in cui opera l'applicazione è quello della sicurezza informatica.
+Il fine ultimo del software è di fornire una soluzione di filtraggio \gls{DNS} avanzata, che consenta un'efficace protezione ad un dispositivo che naviga al di fuori di una rete protetta.
+L'interazione col sistema coinvolgerà in particolare:
+
+\begin{itemize}
+	\item \textbf{Utente finale}: cioè l'utilizzatore del dispositivo da proteggere, il quale navigherà normalmente il web, inviando naturalmente richieste \gls{DNS}
+\end{itemize}
+
+
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

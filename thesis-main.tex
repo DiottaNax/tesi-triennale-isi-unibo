@@ -314,6 +314,21 @@ FlashStart ha esplicitamente sottolineato quanto questo requisito sia cruciale p
 La richiesta è naturalmente intuitiva: un'installazione e una configurazione rapide non solo migliorano l’esperienza dell’utente, ma rendono il software più facilmente integrabile nei diversi contesti aziendali.  
 L'automatizzazione completa del processo di installazione consente agli amministratori di rete di implementare ClientShield senza difficoltà, ottimizzando i tempi e riducendo il rischio di errori nella configurazione.  
 
+\subsection*{Efficienza}
+
+Anche nello sviluppo prototipale, ClientShield dovrebbe garantire un'efficienza tale da risultare totalmente trasparente all'utente.
+L'obiettivo è limitare qualsiasi impatto sulla navigazione, un utente qualsiasi del dispositivo dovrebbe potersi scordare della presenza di un filtro.
+Ciò implica una rapida gestione delle richieste \gls{DNS}, consentendo una veloce risoluzione dei domini, limitando di conseguenza i tempi di caricamento delle pagine web.
+
+Questo requisito è favorito dall'abbandono dell'utilizzo di una \gls{VPN} in favore del protocollo \gls{DoH} e dalla velocità generale dei server di FlashStart, che, a febbraio 2025 ,risulta essere il \gls{DNS} più veloce al mondo secondo \cite{DNSPerf2025}.
+
+\subsection*{Resilienza}
+
+Per garantire la corretta protezione del dispositivo, il servizio di filtraggio dovrebbe poter essere disattivato esclusivamente da un amministratore del dispositivo.
+Ciò vuol dire che ClientShield dovrà assicurare il funzionamento continuo della protezione in qualsiasi condizione, anche nel caso in cui l'utente tenti di disattivare il filtro.
+È requisito essenziale per il software fare in modo che nessuna operazione effettuata da utenti senza privilegi amministrativi, come il banale cambio di rete, possa interrompere la protezione.
+
+\section{Casi d'uso}
 
 
 %----------------------------------------------------------------------------------------

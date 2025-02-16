@@ -153,7 +153,8 @@ Quando un utente, utilizzando un computer protetto dal servizio di FlashStart, t
 Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguito le principali:
 
 \begin{itemize}
-	\item \textbf{A livello di rete:} applicato direttamente dall'\gls{ISP}\footref{foot:isp-footnote}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
+	\item \textbf{A livello di rete:} applicato direttamente dall'\gls{ISP}\footnote{
+		Un \gls{ISP} è un fornitore che offre connettività alla rete, consentendo ai suoi utenti di accedere a Internet. Gli ISP possono anche fornire servizi aggiuntivi, come, appunto, sicurezza informatica e filtraggio.}, blocca l'accesso a domini malevoli prima che le richieste raggiungano la rete locale.  
 	\newline \textit{Esempio: un'azienda utilizza un servizio \gls{DNS} filtrato fornito dal proprio \gls{ISP} per impedire l'accesso a siti malevoli su tutta la rete aziendale.}
 	
 	\item \textbf{A livello di router:} il router funge da punto di controllo, utilizzando un server DNS con filtraggio per impedire l'accesso a contenuti non autorizzati. Tutti i dispositivi connessi alla rete collegata al router beneficiano automaticamente della protezione.
@@ -162,9 +163,6 @@ Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguit
 	\item \textbf{A livello di endpoint:} il filtraggio DNS è applicato direttamente sui dispositivi tramite configurazione manuale o software specifici, garantendo protezione anche fuori dalla rete aziendale o domestica.  
 	\newline \textit{Esempio: un dipendente che lavora da remoto utilizza un client DNS sicuro sul proprio laptop per proteggersi dalle minacce.}
 \end{itemize}
-
-\footnote{\label{foot:isp-footnote}
-	Un \gls{ISP} è un fornitore che offre connettività alla rete, consentendo ai suoi utenti di accedere a Internet. Gli ISP possono anche fornire servizi aggiuntivi, come, appunto, sicurezza informatica e filtraggio.}
 
 FlashStart offre prodotti per tutte le suddette modalità, tuttavia questo progetto prende in esame soltanto la terza tipologia di protezione \gls{DNS}, ossia il filtraggio a livello di endpoint.
 Nel periodo tra il 2019 e il 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
@@ -205,13 +203,13 @@ Tale fase permette di comprendere il contesto in cui il software opera, gli atto
 In questo progetto l'analisi del dominio è risultata molto rapida e diretta, in quanto il prodotto è stato sviluppato con un'azienda del settore informatico, permettendo fin da subito l'utilizzo di un linguaggio tecnico.
 
 Come già introdotto nella sezione \ref{sec:obiettivi-progetto}, il contesto in cui opera l'applicazione è quello della sicurezza informatica.
-Il fine ultimo del software è di fornire una soluzione di filtraggio \gls{DNS} avanzata, che consenta un'efficace protezione ad un dispositivo che naviga al di fuori di una rete protetta.
-L'interazione col sistema coinvolgerà in particolare:
+Il fine ultimo di ClientShield è di fornire una soluzione di filtraggio \gls{DNS} avanzata, che consenta un'efficace protezione ad un dispositivo che naviga al di fuori di una rete protetta.
+L'interazione col software coinvolgerà in particolare:
 
 \begin{itemize}
 	\item \textbf{Utente finale:} cioè l'utilizzatore del dispositivo da proteggere, il quale navigherà normalmente in internet, utilizzando un browser ed inviando naturalmente richieste \gls{DNS}.
 	
-	\item \textbf{Amministratore di rete:} il cliente FlashStart, responsabile dell'installazione e configurazione del software sul dispositivo attraverso la chiave fornita dalla piattaforma cloud. 
+	\item \textbf{Amministratore di rete:} il cliente FlashStart, responsabile dell'installazione e configurazione del software sul dispositivo attraverso la chiave fornita sulla piattaforma cloud. 
 	Tramite l'applicativo online potrà gestire le policy di filtraggio, aggiungendo o rimuovendo siti specifici o intere categorie di contenuti da bloccare.
 
 	\item \textbf{Server FlashStart:} riceveranno le richieste \gls{DNS} effettuate dal dispositivo protetto e le risolveranno applicando i filtri configurati dall'amministratore di rete.
@@ -220,18 +218,109 @@ Il software dovrà operare in modo tale da rendersi completamente trasparente al
 
 \section{Requisiti funzionali}
 
-Il progetto mira allo sviluppo di un'implementazione prototipale.
-Ciò implica che le funzionalità del software trattate in questa tesi rappresentano un sottogruppo delle funzionalità totali del sistema.
-Tuttavia, poiché il risultato dello studio mira a costruire una solida base per una futura implementazione business di ClientShield, di seguito verranno elencati i requisiti del software nella sua interezza.
-La comprensione dei requisiti nel loro complesso, infatti, permette di valutare fin da subito la possibilità di una futura integrazione delle funzioni aggiuntive, consentendo un'analisi più precisa.
- 
+Il progetto prevede lo sviluppo di un'implementazione prototipale, ciò implica che le funzionalità del software trattate in questa tesi rappresentino un sottogruppo delle capacità che dovrà avere il sistema.
+Tuttavia, poiché il risultato dello studio mira a gettare delle solide basi per una futura implementazione business di ClientShield, di seguito verranno elencati i requisiti del software nella sua interezza.
+Una visione complessiva, infatti, permette di valutare fin da subito la possibilità di una futura integrazione delle funzioni aggiuntive, consentendo un'analisi più efficace.
+
+Nella sua implementazione prototipale, ClientShield dovrà:
+
+\begin{itemize}
+	\item \textbf{Redirezionare le richieste \gls{DNS}:}
+	l'applicazione catturerà tutto il traffico \gls{DNS} del dispositivo su cui è installata.
+	Tutte le richieste devono essere redirezionate ai server FlashStart, sfruttando il protocollo \gls{DoH}.
+	La risoluzione dei domini deve essere effettuata dai server aziendali, ClientShield agirà da client \gls{DoH}, facendo in modo di impedire la possibilità di \gls{DNS} leak\footnote{\textbf{DNS leak} si verificano quando le richieste \gls{DNS} non sono cifrate e vengono trasmesse in chiaro.  
+		In questa condizione, un attaccante o qualsiasi entità che intercetti il traffico può monitorare i siti visitati dall'utente, compromettendo la privacy della navigazione.}.
+
+	
+	\item \textbf{Permettere la registrazione di un dispositivo localmente:}
+	dopo l'installazione del software, chiunque disponga di una valida chiave di registrazione, può registrare il dispositivo.
+	Per effettuare tale operazione saranno richiesti:
+	\begin{itemize}
+		\item \textit{chiave di registrazione:} ottenibile tramite un profilo cloud con la corretta licenza.
+		\item \textit{nome del dispositivo:} una qualsiasi stringa che faciliti l'identificazione dell'endpoint ad un amministratore di rete.
+	\end{itemize}
+	Al termine della fase di registrazione, se avvenuta con successo, la protezione dovrà essere attivata e il dispositivo sarà visibile sulla piattaforma cloud.
+	
+	
+	\item \textbf{Permettere abilitazione/disabilitazione della protezione localmente:}
+	accedendo all'applicazione, qualora la protezione sia disattivata, si dovrà offrire la possibilità di attivarla.
+	Viceversa, se la protezione è attiva, l'utente avrà la possibilità di disattivarla inserendo un PIN.
+	Tale codice è un numero intero presente sulla piattaforma cloud e dunque visualizzabile soltanto da un amministratore di rete.
+	
+	\item \textbf{Controllare lo stato:}
+	l'applicazione dovrà periodicamente connettersi ai server FlashStart per verificare lo stato della protezione.
+	Questa operazione nell'implementazione prototipale, ha la funzione di verificare che il dispositivo sia ancora registrato sul cloud.
+	La cancellazione dell'endpoint attraverso la piattaforma cloud, determinerà la disattivazione della protezione e la richiesta di una nuova registrazione.
+	
+	\item \textbf{Attivarsi automaticamente al riavvio:}
+	se l'endpoint è già stato registrato, l'applicazione dovrà garantire il corretto funzionamento della protezione anche al riavvio.
+	Ciò vuol dire che, all'accensione del dispositivo non dovrà essere necessaria, una nuova registrazione.
+	ClientShield ricorderà le credenziali attive prima dello spegnimento, riattivando automaticamente la protezione all'accensione con le stesse.
+	
+\end{itemize}
+Queste funzionalità costituiscono il complessivo comportamento del prototipo sviluppato in questo progetto.
+L'obiettivo essenziale è dunque garantire la protezione del dispositivo, fungendo da intermediario tra l'endpoint e i server di FlashStart.
+
+Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il digramma di in figura \ref{fig:interazione-utente-software-server}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/schema-utente-software-server.png}
+	\caption{interazione tra utente, software e server FlashStart}
+	\label{fig:interazione-utente-software-server}
+\end{figure}
+Come precedentemente anticipato, la versione business dell'applicazione garantirà una serie di funzioni minori in più, di seguito riportate:
+
+\begin{itemize}
+	
+	\item \textbf{Blocco remoto della protezione:}
+	deve essere possibile disattivare la protezione da remoto, questa funzione può essere utilizzata sia dall'amministratore di rete, attraverso la piattaforma cloud, sia direttamente dai server FlashStart.
+	Durante i controlli di stato periodici, infatti, verrà verificata la validità della licenza e, se non risultasse valida, la protezione verrà disattivata automaticamente, impedendo qualsiasi tentativo di riattivazione locale.
+	
+	\item \textbf{Invio di notifiche:}
+	durante la registrazione sarà possibile decidere di ricevere alcune notifiche dall'applicazione.
+	Se attivate, il dispositivo riceverà soltanto le notifiche riguardanti lo stato della protezione del dispositivo, ad esempio licenza scaduta o disabilitazione remota.
+	
+	\item \textbf{Applicazione unbranded:}
+	l'applicazione prima della registrazione dovrebbe avere un nome generico e non presentare alcun logo.
+	Dopo la registrazione dovrà essere possibile ottenere informazioni sull'acquirente, come il nome scelto per il software e il logo da applicare.
+	L'interfaccia grafica dell'applicazione dovrà adattarsi alle informazioni ottenute durante la registrazione.
+	
+	\item \textbf{Controllo di stato periodico:}
+	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà reperire più informazioni.
+	I dati supplementari, come ad esempio:
+	\begin{itemize}
+		\item informazioni sul blocco remoto
+		\item nome e logo dell'acquirente
+		\item cambio di impostazioni sulle notifiche
+	\end{itemize}
+	permetteranno l'implementazione delle funzionalità aggiuntive sopra riportate
+
+\end{itemize}
+Come si può notare, le funzionalità business rappresentano più che altro un'estensione di funzioni già presenti nel modello prototipale.
+Con una corretta analisi del software, dunque, dovrebbe essere possibile aggiungere tutte le funzionalità supplementari al sistema descritto in questa tesi senza particolari sforzi.
+
+\section{Requisiti non funzionali}
+
+Dopo aver definito in dettaglio \textit{cosa} deve fare ClientShield, è altrettanto importante stabilire \textit{come} debba farlo.
+Oltre ai requisiti funzionali del sistema, infatti, il progetto prevede anche dei requisiti non funzionali, che mirano a garantire un livello qualitativo adeguato al sistema.
+Questa categoria di requisiti ha l'obiettivo di soddisfare un potenziale cliente.
+L'aderenza ad essi dovrebbe trasmettere la professionalità di FlashStart, garantendo un'esperienza di utilizzo piacevole per gli utilizzatori finali.
+
+\subsection*{Semplicità}
+
+Di fondamentale importanza è rendere il sistema semplice: rapido da installare e facile da configurare.  
+FlashStart ha esplicitamente sottolineato quanto questo requisito sia cruciale per garantire la qualità del software.
+La richiesta è naturalmente intuitiva: un'installazione e una configurazione rapide non solo migliorano l’esperienza dell’utente, ma rendono il software più facilmente integrabile nei diversi contesti aziendali.  
+L'automatizzazione completa del processo di installazione consente agli amministratori di rete di implementare ClientShield senza difficoltà, ottimizzando i tempi e riducendo il rischio di errori nella configurazione.  
+
 
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\backmatter
+\backmatter\
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}

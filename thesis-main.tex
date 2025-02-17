@@ -44,6 +44,7 @@
 \newacronym{VPN}{VPN}{Virtual Private Network}
 \newacronym{HTTPS}{HTTPS}{HTTP Secure}
 \newacronym{ISP}{ISP}{Internet Service Provider}
+\newacronym{OS}{OS}{Sistema Operativo}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -195,6 +196,7 @@ La novità principale del software prototipale illustrato in questa tesi, è dun
 Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali atte a garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
 
 \chapter{Analisi dei Requisiti}
+\label{chap:analisi-dei-requisiti}
 
 \section{Scopo del sistema e analisi del dominio}
 
@@ -214,7 +216,7 @@ L'interazione col software coinvolgerà in particolare:
 
 	\item \textbf{Server FlashStart:} riceveranno le richieste \gls{DNS} effettuate dal dispositivo protetto e le risolveranno applicando i filtri configurati dall'amministratore di rete.
 \end{itemize}
-Il software dovrà operare in modo tale da rendersi completamente trasparente all'utente finale, il quale non dovrebbe percepire alcuna differenza durante la normale navigazione. L'unico momento in cui sarà consapevole della presenza di un filtro, sarà durante il tentativo di accesso ad un contenuto online bloccato, in tal caso visualizzerà invece una schermata di blocco riportante eventualmente le motivazioni.
+Il software dovrà operare in modo tale da rendersi completamente trasparente all'utente finale, il quale non dovrebbe percepire alcuna differenza durante la normale navigazione.
 
 \section{Requisiti funzionali}
 
@@ -249,7 +251,7 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 	
 	\item \textbf{Controllare lo stato:}
 	l'applicazione dovrà periodicamente connettersi ai server FlashStart per verificare lo stato della protezione.
-	Questa operazione nell'implementazione prototipale, ha la funzione di verificare che il dispositivo sia ancora registrato sul cloud.
+	Questa operazione nell'implementazione prototipale ha                                              la funzione di verificare che il dispositivo sia ancora registrato sul cloud.
 	La cancellazione dell'endpoint attraverso la piattaforma cloud, determinerà la disattivazione della protezione e la richiesta di una nuova registrazione.
 	
 	\item \textbf{Attivarsi automaticamente al riavvio:}
@@ -261,7 +263,7 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 Queste funzionalità costituiscono il complessivo comportamento del prototipo sviluppato in questo progetto.
 L'obiettivo essenziale è dunque garantire la protezione del dispositivo, fungendo da intermediario tra l'endpoint e i server di FlashStart.
 
-Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il digramma di in figura \ref{fig:interazione-utente-software-server}.
+Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il diagramma in figura \ref{fig:interazione-utente-software-server}.
 
 \begin{figure}[H]
 	\centering
@@ -294,7 +296,7 @@ Come precedentemente anticipato, la versione business dell'applicazione garantir
 		\item nome e logo dell'acquirente
 		\item cambio di impostazioni sulle notifiche
 	\end{itemize}
-	permetteranno l'implementazione delle funzionalità aggiuntive sopra riportate
+	permetteranno l'implementazione delle funzionalità aggiuntive sopra riportate.
 
 \end{itemize}
 Come si può notare, le funzionalità business rappresentano più che altro un'estensione di funzioni già presenti nel modello prototipale.
@@ -320,7 +322,7 @@ Anche nello sviluppo prototipale, ClientShield dovrebbe garantire un'efficienza 
 L'obiettivo è limitare qualsiasi impatto sulla navigazione, un utente qualsiasi del dispositivo dovrebbe potersi scordare della presenza di un filtro.
 Ciò implica una rapida gestione delle richieste \gls{DNS}, consentendo una veloce risoluzione dei domini, limitando di conseguenza i tempi di caricamento delle pagine web.
 
-Questo requisito è favorito dall'abbandono dell'utilizzo di una \gls{VPN} in favore del protocollo \gls{DoH} e dalla velocità generale dei server di FlashStart, che, a febbraio 2025 ,risulta essere il \gls{DNS} più veloce al mondo secondo \cite{DNSPerf2025}.
+Questo requisito è favorito dall'abbandono dell'utilizzo di una \gls{VPN} in favore del protocollo \gls{DoH} e dalla velocità generale dei server di FlashStart, che, a febbraio 2025, risulta essere il \gls{DNS} più veloce al mondo secondo \cite{DNSPerf2025}.
 
 \subsection*{Resilienza}
 
@@ -329,6 +331,71 @@ Ciò vuol dire che ClientShield dovrà assicurare il funzionamento continuo dell
 È requisito essenziale per il software fare in modo che nessuna operazione effettuata da utenti senza privilegi amministrativi, come il banale cambio di rete, possa interrompere la protezione.
 
 \section{Casi d'uso}
+
+Allo scopo di descrivere in modo dettagliato il comportamento atteso del software, vengono di seguito riportati anche i casi d'uso del sistema.
+Ciascun caso d'uso rappresenta una specifica interazione tra gli attori e ClientShield, chiarificando le azioni che possono essere eseguite e le risposte da parte dell'applicazione.
+Questa visione è particolarmente utile, perché pone l'attenzione sull'utente, evidenziando come interagirà con ClientShield e cosa percepirà in seguito ad ogni possibile azione eseguita.
+Di seguito sono riportati i principali casi d'uso del prototipo:
+
+\begin{itemize}
+	
+	\item \textbf{Utente avvia l'applicazione:}
+	all'avvio dell'applicazione se il dispositivo non risulta registrato, l'utente verrà indirizzato ad una schermata di registrazione.
+	Se invece l'utente è già registrato e la protezione è disattivata, allora verrà offerta la possibilità di attivarla.
+	Viceversa, se è già registrato e la protezione è attiva, deve essere disponibile un'opzione per disattivarla.
+	
+	\item \textbf{Registrazione:}
+	per registrarsi l'utente dovrà inserire i campi richiesti (chiave di profilo e nome del dispositivo).
+	Se la registrazione ha avuto successo la protezione deve essere attivata, iniziando subito a filtrare le richieste \gls{DNS}.
+	Per la comunicazione con i server FlashStart sarà necessario un codice utente univoco, ottenibile come risposta alla fase di registrazione.
+	In caso di errore, la causa deve essere visibile dall'utente, che potrà ritentare.
+	
+	\item \textbf{Disattivazione protezione:}
+	per disattivare la protezione tramite l'applicazione sarà necessario l'inserimento di un codice PIN.
+	Il PIN è un numero intero visualizzabile dalla piattaforma cloud e deve essere validato.
+	Se il codice è corretto, la protezione viene disattivata; in caso contrario, sarà mostrato un messaggio di errore e l'utente potrà ritentare.
+	
+	\item \textbf{Utente riavvia il dispositivo:}
+	al riavvio del computer, se l'endpoint era stato correttamente registrato prima dello spegnimento, la protezione deve essere automaticamente riattivata.
+	ClientShield dovrà recuperare il codice univoco fornito in fase di registrazione, che sarà utilizzato, come sempre, per la comunicazione con i server FlashStart.
+	
+	\item \textbf{Utente naviga sul web:}
+	la navigazione su un browser deve avvenire come di consueto.
+	In caso di accesso ad un contenuto bloccato deve essere visibile una pagina di stop, che riporti le motivazioni del blocco.
+
+\end{itemize}
+
+Per riassumere le azioni che un utente può compiere in ciascun momento è stato realizzato la schema in figura \ref{fig:schema-casi-uso}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/schema-casi-uso.png}
+	\caption{navigazione dell'utente nell'app}
+	\label{fig:schema-casi-uso}
+\end{figure}
+
+\chapter{Analisi e progettazione}
+
+\section{Struttura del progetto}
+
+Lo sviluppo del progetto è stato naturalmente preceduto da una necessaria fase di analisi.
+Identificati i requisiti del sistema, espressi nel capitolo \ref{chap:analisi-dei-requisiti}, risulta necessario definire come dovrà essere strutturato il software sulla base di essi.
+Durante l'intera fase di progettazione si terrà chiaramente conto del fatto che ClientShield ha come target di piattaforma Windows, in particolare a partire dalla versione 10.
+
+Dall'analisi dei requisiti è possibile, intuitivamente, verificare la presenza di due progetti ben distinti.
+ClientShield, infatti, dovrà sempre filtrare richieste \gls{DNS}, interagendo in maniera continuativa con il \gls{OS}.
+L'interazione diretta con l'utente è invece sporadica, avviene soltanto in caso di necessità e ovviamente attraverso un'interfaccia grafica.
+Per tale motivo, si è deciso fin da subito di orientare lo sviluppo del software in due sotto-progetti, collegati tra loro, ma ben distinti.
+L'orientamento ad una struttura di questo tipo permette di ottenere due vantaggi importanti:
+
+\begin{itemize}
+	\item \textbf{Diminuire la complessità del sistema:}
+	una divisione in progetti separati permette innanzitutto una complessità generale minore e una divisione delle responsabilità ben definita.
+	Una suddivisione esplicita consentirà, dal punto di vista aziendale, una più chiara divisione dello sviluppo; utile soprattutto qualora il progetto dovesse essere affidato a più sviluppatori.
+	
+	\item \textbf{Consente un multi-platform parziale:}
+	se da una parte, il servizio di filtraggio dovrà necessariamente comunicare con l'\gls{OS}, 
+\end{itemize} 
 
 
 %----------------------------------------------------------------------------------------

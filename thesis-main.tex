@@ -12,6 +12,59 @@
 \usepackage{float}
 \usepackage{pgfplots}
 
+% Package per disegnare directories
+\usepackage[edges]{forest}
+\definecolor{folderbg}{RGB}{124,166,198}
+\definecolor{folderborder}{RGB}{110,144,169}
+\newlength\Size
+\setlength\Size{4pt}
+\tikzset{
+	% setta immagine della cartella
+	folder/.pic={%
+		\filldraw [draw=folderborder, top color=folderbg!50, bottom color=folderbg] (-1.05*\Size,0.2\Size+5pt) rectangle ++(.75*\Size,-0.2\Size-5pt);
+		\filldraw [draw=folderborder, top color=folderbg!50, bottom color=folderbg] (-1.15*\Size,-\Size) rectangle (1.15*\Size,\Size);
+	},
+	% setta immagine file
+	file/.pic={%
+		\filldraw [draw=folderborder, top color=folderbg!5, bottom color=folderbg!10] (-\Size,.4*\Size+5pt) coordinate (a) |- (\Size,-1.2*\Size) coordinate (b) -- ++(0,1.6*\Size) coordinate (c) -- ++(-5pt,5pt) coordinate (d) -- cycle (d) |- (c) ;
+	},
+}
+\forestset{%
+	declare autowrapped toks={pic me}{},
+	declare boolean register={pic root},
+	pic root=0,
+	pic dir tree/.style={%
+		for tree={%
+			folder,
+			font=\ttfamily,
+			grow'=0,
+		},
+		before typesetting nodes={%
+			for tree={%
+				edge label+/.option={pic me},
+			},
+			if pic root={
+				tikz+={
+					\pic at ([xshift=\Size].west) {folder};
+				},
+				align={l}
+			}{},
+		},
+	},
+	pic me set/.code n args=2{%
+		\forestset{%
+			#1/.style={%
+				inner xsep=2\Size,
+				pic me={pic {#2}},
+			}
+		}
+	},
+	pic me set={directory}{folder},
+	pic me set={file}{file},
+}
+
+% Fine configurazione package forest
+
 \newcommand{\acknowledgementsname}{Riconoscimenti}
 \renewcommand{\chaptername}{Capitolo} % Per i capitoli
 \renewcommand{\bibname}{Bibliografia} % Per la bibliografia
@@ -386,16 +439,51 @@ Dall'analisi dei requisiti è possibile, intuitivamente, verificare la presenza 
 ClientShield, infatti, dovrà sempre filtrare richieste \gls{DNS}, interagendo in maniera continuativa con il \gls{OS}.
 L'interazione diretta con l'utente è invece sporadica, avviene soltanto in caso di necessità e ovviamente attraverso un'interfaccia grafica.
 Per tale motivo, si è deciso fin da subito di orientare lo sviluppo del software in due sotto-progetti, collegati tra loro, ma ben distinti.
-L'orientamento ad una struttura di questo tipo permette di ottenere due vantaggi importanti:
+L'orientamento ad una struttura di questo tipo permette di ottenere dei vantaggi importanti.
+
+Anzitutto la divisione in due sotto-progetti distinti consente una minore complessità generale del sistema e una chiara suddivisione delle responsabilità.
+Tale approccio, da un punto di vista aziendale, facilita la gestione del codice e un'eventuale suddivisione del lavoro tra più sviluppatori.
+
+In secondo luogo, anche se il servizio di filtraggio deve necessariamente interagire con l'\gls{OS}, l'interfaccia utente e la logica di configurazione del filtro non ha vincoli di piattaforma. Ciò apre le porte ad una potenziale estensione multi-platform\footnote{La programmazione \textbf{multi-platform} si pone l'obiettivo di consentire allo stesso codice di poter essere eseguito su macchine aventi \gls{OS} completamente differenti.} per la parte di interfaccia.
+Ciò vuol significa che un'eventuale espansione a sistemi operativi diversi (ad esempio Linux) richiederebbe unicamente la modifica del modulo di filtraggio.
+
+\subsection{Organizzazione dei sotto-progetti}
+
+In definitiva, sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
 
 \begin{itemize}
-	\item \textbf{Diminuire la complessità del sistema:}
-	una divisione in progetti separati permette innanzitutto una complessità generale minore e una divisione delle responsabilità ben definita.
-	Una suddivisione esplicita consentirà, dal punto di vista aziendale, una più chiara divisione dello sviluppo; utile soprattutto qualora il progetto dovesse essere affidato a più sviluppatori.
+	\item \textbf{Servizio di filtraggio:}
+	questo modulo rappresenta la parte centrale del software, sarà il responsabile dell'intercettazione e del filtraggio delle richieste \gls{DNS}.
+	Dovrà essere implementato come servizio Windows, garantendo un'esecuzione continua e automatica all'avvio del sistema, definendo inoltre strategie di recupero in caso di errori.
 	
-	\item \textbf{Consente un multi-platform parziale:}
-	se da una parte, il servizio di filtraggio dovrà necessariamente comunicare con l'\gls{OS}, 
-\end{itemize} 
+	\item \textbf{Interfaccia utente:}
+	questo modulo rappresenta la parte del software con cui l'utente interagirà.
+	Il ruolo del sotto-progetto è di consentire la comunicazione con il servizio di filtraggio attraverso un'interfaccia grafica intuitiva.
+\end{itemize}
+
+	
+\begin{figure}[H]
+	\centering
+	\begin{forest}
+		pic dir tree,
+		pic root,
+		for tree={% folder icons by default; override using file for file icons
+			directory,
+			fit=band
+		},
+		[FlashStart/
+		[ClientShield/
+		[Service/]
+		[GUI/]
+		[Common/]
+		[Installer/]
+		]
+		]
+	\end{forest}
+	\caption{Struttura dei sotto-progetti di ClientShield}
+	\label{fig:structure-clientshield}
+\end{figure}
+
 
 
 %----------------------------------------------------------------------------------------

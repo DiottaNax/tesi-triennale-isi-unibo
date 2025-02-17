@@ -432,39 +432,24 @@ Per riassumere le azioni che un utente può compiere in ciascun momento è stato
 \section{Struttura del progetto}
 
 Lo sviluppo del progetto è stato naturalmente preceduto da una necessaria fase di analisi.
-Identificati i requisiti del sistema, espressi nel capitolo \ref{chap:analisi-dei-requisiti}, risulta necessario definire come dovrà essere strutturato il software sulla base di essi.
-Durante l'intera fase di progettazione si terrà chiaramente conto del fatto che ClientShield ha come target di piattaforma Windows, in particolare a partire dalla versione 10.
+Identificati i requisiti del sistema, espressi nel capitolo \ref{chap:analisi-dei-requisiti}, risulta necessario definire come debba essere strutturato il software sulla base di essi.
+Durante l'intera fase di progettazione si è tenuto conto del fatto che ClientShield ha come target di piattaforma Windows, in particolare a partire dalla versione 10.
 
-Dall'analisi dei requisiti è possibile, intuitivamente, verificare la presenza di due progetti ben distinti.
-ClientShield, infatti, dovrà sempre filtrare richieste \gls{DNS}, interagendo in maniera continuativa con il \gls{OS}.
-L'interazione diretta con l'utente è invece sporadica, avviene soltanto in caso di necessità e ovviamente attraverso un'interfaccia grafica.
-Per tale motivo, si è deciso fin da subito di orientare lo sviluppo del software in due sotto-progetti, collegati tra loro, ma ben distinti.
-L'orientamento ad una struttura di questo tipo permette di ottenere dei vantaggi importanti.
+Dall'analisi dei requisiti emerge chiaramente la presenza di due componenti ben distinti.
+ClientShield, infatti, dovrà costantemente filtrare richieste \gls{DNS}, interagendo in maniera continuativa con il sistema operativo.
+L'interazione diretta con l'utente, invece, è sporadica e avviene soltanto in caso di necessità, attraverso un'interfaccia grafica.
+Per tale motivo, si è deciso fin da subito di suddividere lo sviluppo del software in due sotto-progetti, collegati tra loro, ma ben distinti.
+Un'organizzazione di questo tipo permette di ottenere vantaggi importanti.
 
-Anzitutto la divisione in due sotto-progetti distinti consente una minore complessità generale del sistema e una chiara suddivisione delle responsabilità.
-Tale approccio, da un punto di vista aziendale, facilita la gestione del codice e un'eventuale suddivisione del lavoro tra più sviluppatori.
+Anzitutto, la divisione in due sotto-progetti induce ad una minore complessità generale del sistema e ad una chiara suddivisione delle responsabilità.
+Tale approccio, inoltre, da un punto di vista aziendale, facilita la gestione del codice e un'eventuale suddivisione del lavoro tra più sviluppatori.
 
-In secondo luogo, anche se il servizio di filtraggio deve necessariamente interagire con l'\gls{OS}, l'interfaccia utente e la logica di configurazione del filtro non ha vincoli di piattaforma. Ciò apre le porte ad una potenziale estensione multi-platform\footnote{La programmazione \textbf{multi-platform} si pone l'obiettivo di consentire allo stesso codice di poter essere eseguito su macchine aventi \gls{OS} completamente differenti.} per la parte di interfaccia.
-Ciò vuol significa che un'eventuale espansione a sistemi operativi diversi (ad esempio Linux) richiederebbe unicamente la modifica del modulo di filtraggio.
+In secondo luogo, sebbene il servizio di filtraggio debba necessariamente interagire con il sistema operativo, l'interfaccia utente e la logica di configurazione del filtro non hanno vincoli di piattaforma.
+Ciò apre la possibilità ad una potenziale estensione multi-platform\footnote{La programmazione \textbf{multi-platform} si pone l'obiettivo di consentire allo stesso codice di poter essere eseguito su macchine aventi sistemi operativi differenti.} per la parte grafica.
+Di conseguenza, un'eventuale espansione a sistemi operativi diversi (ad esempio Linux) richiederebbe unicamente la modifica del modulo di filtraggio.
 
 \subsection{Organizzazione dei sotto-progetti}
 
-In definitiva, sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
-
-\begin{itemize}
-	\item \textbf{Servizio di filtraggio:}
-	questo modulo rappresenta la parte centrale del software, sarà il responsabile dell'intercettazione e del filtraggio delle richieste \gls{DNS}.
-	Dovrà essere implementato come servizio Windows, garantendo un'esecuzione continua e automatica all'avvio del sistema, definendo inoltre strategie di recupero in caso di errori.
-	
-	\item \textbf{Interfaccia utente:}
-	questo modulo rappresenta la parte del software con cui l'utente interagirà.
-	Il ruolo del sotto-progetto è di consentire la comunicazione con il servizio di filtraggio attraverso un'interfaccia grafica intuitiva.
-	
-	\item \textbf{Modulo comune:}
-	
-\end{itemize}
-
-	
 \begin{figure}[H]
 	\centering
 	\begin{forest}
@@ -484,8 +469,28 @@ In definitiva, sulla base di questa suddivisione logica, ClientShield è stato o
 		]
 	\end{forest}
 	\caption{Struttura dei sotto-progetti di ClientShield}
-	\label{fig:structure-clientshield}
+	\label{fig:struttura-directory-clientshield}
 \end{figure}
+
+Sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
+\begin{itemize}
+	\item \textbf{Servizio di filtraggio:}
+	questo modulo rappresenta la parte centrale del software, sarà il responsabile dell'intercettazione e del filtraggio delle richieste \gls{DNS}.
+	Dovrà essere implementato come servizio Windows, garantendo un'esecuzione continua e automatica all'avvio del sistema, definendo inoltre strategie di recupero in caso di errori.
+	
+	\item \textbf{Interfaccia utente:}
+	questo modulo rappresenta la parte del software con cui l'utente interagirà.
+	Il ruolo del sotto-progetto è di consentire la comunicazione con il servizio di filtraggio attraverso un'interfaccia grafica intuitiva.
+	
+	\item \textbf{Modulo comune:}
+	questo modulo conterrà variabili, classi e configurazioni condivise tra interfaccia e servizio di filtraggio.
+	Qui saranno specificati anche i tipi di messaggio che possono essere scambiati tra servizio e interfaccia, permettendo di mantenere sempre integrità di comunicazione tra i due sotto-progetti.
+	
+	\item \textbf{Installer:}
+	questo modulo dedicato alla creazione dell'installatore del software.
+	Si occuperà di automatizzare l'installazione del servizio e dell'interfaccia, garantendone il funzionamento corretto.
+\end{itemize}
+L'organizzazione del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
 
 
 

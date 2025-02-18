@@ -98,6 +98,7 @@
 \newacronym{HTTPS}{HTTPS}{HTTP Secure}
 \newacronym{ISP}{ISP}{Internet Service Provider}
 \newacronym{OS}{OS}{Sistema Operativo}
+\newacronym{SRP}{SRP}{Single Responsibility Principle}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -526,6 +527,34 @@ In figura \ref{fig:schema-messaggi-gui-service} viene illustrato il possibile sc
 \end{figure}
 
 \section{Servizio Windows}
+
+Il servizio di filtraggio si compone essenzialmente di due parti: una gestisce la comunicazione inter-processo, l'altra si occupa del filtraggio \gls{DNS}.
+Dei due componenti, la comunicazione inter-processo deve essere sempre disponibile, ma il servizio di filtraggio si potrà attivare e disattivare a comando.
+Per questo motivo, il servizio Windows deve essere costituito principalmente come un server named pipe, mentre l'analisi si concentra sull'organizzazione del servizio di protezione.
+
+Nel vecchio software, per assicurare che tutto il traffico passasse dal filtro, veniva creata una scheda di rete virtuale.
+Modificando le metriche di priorità delle interfacce si rendeva quest’ultima la più “alta in graduatoria”, così che il sistema instradasse il traffico su di essa prima di qualsiasi altra. Questo permetteva di intercettare le richieste e bloccare o modificare il traffico indesiderato. Tuttavia, si trattava di una soluzione più complessa da gestire e potenzialmente soggetta a conflitti con altri driver o componenti di rete.
+
+Nella nuova versione di ClientShield, invece, si è deciso di implementare un server \gls{DNS} locale, soluzione che offre dei vantaggi considerevoli:
+
+\begin{itemize}
+	\item \textbf{Semplicità di implementazione:}
+	configurare un processo che ascolta sulla porta 53 e risolva le richieste \gls{DNS} è decisamente più semplice rispetto alla creazione di una scheda di rete virtuale.
+	Tale scelta, inoltre, limita anche il rischio di incompatibilità con software terzi che gestiscono altre schede di rete virtuali.
+	
+	\item \textbf{Manutenibilità:}
+	un server locale consente di isolare la responsabilità del software semplicemente al filtraggio.
+	Questa soluzione permette una maggiore chiarezza e una più corretta aderenza al \gls{SRP}, descritto in \cite{Martin2002}.
+	In questo modo, infatti, il modulo di protezione gestisce solo richieste \gls{DNS}, migliorando il debugging, che sarà limitato ad un singolo componente.
+	
+	\item \textbf{Portabilità:}
+	l'implementazione di un server \gls{DNS} non ha dipendenze specifiche dal sistema operativo.
+	Le soluzioni esplorate in seguito consentono di relegare l'interazione diretta con l'\gls{OS} alla sola impostazione del server locale come \gls{DNS} predefinito.
+\end{itemize}
+
+In sintesi, il nuovo design del servizio Windows prevede l'implementazione di un server named pipe che, su comando dell'utente, interagisce con il servizio di protezione per avviare o interrompere l'esecuzione di un server \gls{DNS} locale, impostato come predefinito di sistema.
+
+
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

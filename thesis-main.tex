@@ -384,6 +384,7 @@ Ciò vuol dire che ClientShield dovrà assicurare il funzionamento continuo dell
 È requisito essenziale per il software fare in modo che nessuna operazione effettuata da utenti senza privilegi amministrativi, come il banale cambio di rete, possa interrompere la protezione.
 
 \section{Casi d'uso}
+\label{sec:casi-d-uso}
 
 Allo scopo di descrivere in modo dettagliato il comportamento atteso del software, vengono di seguito riportati anche i casi d'uso del sistema.
 Ciascun caso d'uso rappresenta una specifica interazione tra gli attori e ClientShield, chiarificando le azioni che possono essere eseguite e le risposte da parte dell'applicazione.
@@ -450,6 +451,27 @@ Di conseguenza, un'eventuale espansione a sistemi operativi diversi (ad esempio 
 
 \subsection{Organizzazione dei sotto-progetti}
 
+Sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
+
+\begin{itemize}
+	\item \textbf{Servizio di filtraggio:}
+	questo modulo rappresenta la parte centrale del software, sarà il responsabile dell'intercettazione e del filtraggio delle richieste \gls{DNS}.
+	Dovrà essere implementato come servizio Windows, garantendo un'esecuzione continua e automatica all'avvio del sistema, definendo inoltre strategie di recupero in caso di errori.
+	
+	\item \textbf{Interfaccia utente:}
+	questo modulo rappresenta la parte del software con cui l'utente interagirà.
+	Il ruolo del sotto-progetto è di consentire la comunicazione con il servizio di filtraggio attraverso un'interfaccia grafica intuitiva.
+	
+	\item \textbf{Modulo comune:}
+	questo modulo conterrà variabili, classi e configurazioni condivise tra interfaccia e servizio di filtraggio.
+	Qui saranno specificati anche i tipi di messaggio che possono essere scambiati tra servizio e interfaccia, permettendo di mantenere sempre integrità di comunicazione tra i due sotto-progetti.
+	
+	\item \textbf{Installer:}
+	questo modulo dedicato alla creazione dell'installatore del software.
+	Si occuperà di automatizzare l'installazione del servizio e dell'interfaccia, garantendone il funzionamento corretto.
+\end{itemize}
+L'organizzazione del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
+
 \begin{figure}[H]
 	\centering
 	\begin{forest}
@@ -472,27 +494,38 @@ Di conseguenza, un'eventuale espansione a sistemi operativi diversi (ad esempio 
 	\label{fig:struttura-directory-clientshield}
 \end{figure}
 
-Sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
-\begin{itemize}
-	\item \textbf{Servizio di filtraggio:}
-	questo modulo rappresenta la parte centrale del software, sarà il responsabile dell'intercettazione e del filtraggio delle richieste \gls{DNS}.
-	Dovrà essere implementato come servizio Windows, garantendo un'esecuzione continua e automatica all'avvio del sistema, definendo inoltre strategie di recupero in caso di errori.
-	
-	\item \textbf{Interfaccia utente:}
-	questo modulo rappresenta la parte del software con cui l'utente interagirà.
-	Il ruolo del sotto-progetto è di consentire la comunicazione con il servizio di filtraggio attraverso un'interfaccia grafica intuitiva.
-	
-	\item \textbf{Modulo comune:}
-	questo modulo conterrà variabili, classi e configurazioni condivise tra interfaccia e servizio di filtraggio.
-	Qui saranno specificati anche i tipi di messaggio che possono essere scambiati tra servizio e interfaccia, permettendo di mantenere sempre integrità di comunicazione tra i due sotto-progetti.
-	
-	\item \textbf{Installer:}
-	questo modulo dedicato alla creazione dell'installatore del software.
-	Si occuperà di automatizzare l'installazione del servizio e dell'interfaccia, garantendone il funzionamento corretto.
-\end{itemize}
-L'organizzazione del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
+\section{Comunicazione interprocesso}
 
+Vista la divisione in progetti separati, la successiva fase di analisi ha preso in considerazione la modalità di comunicazione tra i due progetti.
+L'architettura generale di ClientShield assomiglia molto ad un sistema client-server.
+Infatti, l'interfaccia grafica deve stabilire una connessione con il servizio Windows per inviare dei messaggi contenenti gli input dell'utente e la richiesta di svolgere determinate operazioni, per poi attendere la risposta del servizio.
 
+Per permettere la corretta comunicazione tra il servizio Windows e l'interfaccia grafica, è necessario stabilire un protocollo di comunicazione inter-processo.
+Le caratteristiche fondamentali di tale protocollo sono garantire una comunicazione affidabile e di tipo half-duplex\footnote{La comunicazione \textbf{half-duplex} tra due nodi permette la trasmissione di messaggi da parte di entrambi, ma soltanto uno per volta.} tra due processi separati, ma in esecuzione sullo stesso dispositivo.
+
+Per la scelta del protocollo, dovendo sviluppare in ambiente Windows, ci si è riferiti alla documentazione Microsoft, che presenta l'articolo \cite{MicrosoftIPC2024} sulle comunicazioni inter-processo.
+Si è optato per l'utilizzo della comunicazione tramite named pipes, consigliata soprattutto per la sua affidabilità e semplicità di implementazione, grazie al supporto nativo offerto da Windows.
+
+Le named pipes permettono di stabilire un canale di comunicazione identificato da un nome univoco, accessibile sia dal servizio che dall'interfaccia senza necessità di configurazioni complesse.   
+Un ulteriore vantaggio è la loro efficienza: essendo ottimizzate per la comunicazione all'interno dello stesso sistema, garantiscono una latenza ridotta rispetto ad altre tecniche di comunicazione inter-processo.  
+Infine le named pipes offrono la possibilità di definire controlli di accesso a livello di sistema operativo, impedendo la manipolazione dei dati da parte di processi non autorizzati, garantendo che solo l'interfaccia ufficiale possa inviare comandi al servizio, evitando interferenze da applicazioni di terze parti.
+
+Scelto il protocollo, si è scelta la struttura dei messaggi.
+Vista la vasta disponibilità di librerie capaci di serializzare e deserializzare classi in formato JSON, si è deciso di utilizzare quest'ultimo per la comunicazione.
+La scelta è dovuta al fatto che i dati presenti nel messaggio dipendono dall'operazione e possono essere anche di tipo diverso. Infatti la disabilitazione, come sottolineato in sezione \ref{sec:casi-d-uso}, necessita l'inserimento di un numero intero.
+Ciò significa che l'invio di semplici stringhe di testo richiederebbe controlli manuali sulla struttura del messaggio e sui tipi di ogni singolo campo.
+JSON permette l'automatizzazione dei controlli: sarà sufficiente definire delle classi rappresentanti i diversi tipi di messaggio nella comunicazione e delegare la conversione da classe a JSON, o viceversa, ad una libreria esterna, gestendo eventuali errori.
+
+In figura \ref{fig:schema-messaggi-gui-service} viene illustrato il possibile scambio di messaggi tra interfaccia grafica e servizio Windows.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/schema-messaggi-gui-service.png}
+	\caption{Scambio di messaggi tra GUI e servizio Windows}
+	\label{fig:schema-messaggi-gui-service}
+\end{figure}
+
+\section{Servizio Windows}
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

@@ -617,8 +617,8 @@ La soluzione utilizzata in questo caso, illustrata in figura \ref{fig:dns-decora
 Questa scelta permette di isolare la logica di interazione con Windows in una classe secondaria, migliorando il riuso.
 Ad interagire con il sistema operativo è la classe statica \texttt{NetworkManager}, che consente di configurare il \gls{DNS} di sistema come statico, specificando un indirizzo, oppure di ripristinarlo in modalità dinamica.
 Il decoratore \texttt{StubbornDnsServer} permette di aggiungere le funzionalità di \texttt{NetworkManager} a \texttt{ServerDns}.
-Ciò consente di di estendere i metodi per avviare e interrompere il server, facendo in modo di modificare automaticamente il \gls{DNS} predefinito del dispositivo.
-Il pattern risulta davvero utile, in quanto consente di isolare l'utilizzo di librerie specifiche per Windows a due sole classi, aprendo la possibilità ad un futuro sviluppo multi-platform.
+In questo modo è possibile estendere i metodi per avviare e interrompere il server, garantendo, rispettivamente, l'aggiornamento e il ripristino automatico del \gls{DNS} predefinito sul dispositivo.
+L'adozione del pattern \textit{Decorator} risulta particolarmente utile, in quanto consente di isolare l'utilizzo di librerie specifiche per Windows a due sole classi, aprendo la possibilità ad un futuro sviluppo multi-platform.
 
 
 

@@ -72,7 +72,7 @@
 \renewcommand{\listfigurename}{Elenco delle figure}
 \renewcommand{\listtablename}{Elenco delle tabelle}
 \newcommand{\itemdef}[1]{\item \textbf{#1}}
-
+\newcommand{\class}[1]{\texttt{#1}}
 
 \glsdisablehyper
 
@@ -629,8 +629,8 @@ L'adozione del pattern \textit{Decorator} risulta particolarmente utile, in quan
 L'interfaccia grafica è l'unica parte del software con cui l'utente interagirà direttamente.
 Il suo compito è essenzialmente quello di permettere all'utilizzatore l'accesso ai comandi della protezione, esposti tramite il server pipe dal servizio Windows.
 L'interfaccia agisce come client nella connessione tramite named pipe, inviando le richieste effettuate dall'utente e attendendo la risposta dal server.
-Poiché il software è un prototipo, come già sottolineato, l'obiettivo dell'analisi è proporre una soluzione che permetta facile modifica della parte visiva.
-L'interfaccia sarà sviluppata molto semplicemente, dando una rapida rappresentazione grafica ai comandi che è possibile effettuare.
+Poiché il software è soltanto un prototipo, l'obiettivo dell'analisi è proporre una soluzione che permetta una facile modifica della parte visiva.
+L'interfaccia sarà sviluppata molto semplicemente, dando solo una rapida rappresentazione grafica ai comandi che è possibile effettuare.
 Dal punto di vista aziendale, il prototipo risulta efficace se la modifica dell'interfaccia, che verrà senza dubbio sottoposta al consiglio di grafici esperti, richiede poche o nulle modifiche di backend.
 
 \subsection{Model-View-Presenter}
@@ -655,7 +655,7 @@ Si compone di tre elementi principali:
 	Il \textit{Presenter} riceve i dati in input dall \textit{View}, li valida e si occupa della loro elaborazione.
 	Svolge il ruolo di mediatore tra \textit{Model} e \textit{View}, occupandosi di verificare sempre la coerenza tra dati e rappresentazione.
 \end{itemize}
-A causa della loro stretta interconnessione, Presenter e View detengono ognuno un riferimento all'altro, chiamando l'uno i metodi dell'altro.
+A causa della loro stretta interconnessione, Presenter e View detengono riferimenti reciproci, consentendo ad ognuno di chiamare i metodi dell'altro.
 Ogni View necessita il suo specifico Presenter e tipicamente lo instanzia essa stessa.
 
 \begin{figure}[H]
@@ -664,9 +664,18 @@ Ogni View necessita il suo specifico Presenter e tipicamente lo instanzia essa s
 	\caption{Diagramma di sequenza pattern MVP}
 	\label{fig:mvp-diagramma-sequenza}
 \end{figure}
+In figura \ref{fig:mvp-diagramma-sequenza} è possibile visualizzare i componenti dell'architettura proposta, che trae ispirazione dell'articolo \cite{Ramsdale2010}.
+L'immagine offre una rappresentazione delle interazioni che dovrebbero avvenire in una corretta implementazione dell'architettura.
 
-L'architettura illustrata in figura \ref{fig:mvp-diagramma-sequenza} trae ispirazione dell'articolo \cite{Ramsdale2010}.
+Nell'interfaccia grafica di ClientShield non esiste un vero e proprio Model, i dati da rappresentare risultano essere gli stati della protezione.
+Pertanto, a svolgere tale ruolo è \class{PipeClient}, che si occupa di inviare e ricevere dati dal servizio Windows, ottenendo risposte sull'esito delle operazioni e sullo stato della protezione.
 
+Stando a quanto riportato in sezione \ref{sec:casi-d-uso}, le possibili \class{View} sono tre e rispecchiano gli stati di ClientShield: non registrato, protezione attiva, protezione disattivata.
+Ognuna di esse dovrà avere il proprio \class{Presenter} che consenta di validare e processare i dati delle richieste utente.
+
+L'architettura proposta sostituisce all'implementazione di una coda di eventi, utilizzata in \cite{Ramsdale2010}, l'utilizzo della classe \class{NavigationController}.
+Quest'ultima si configura come un \textit{observer} per i \class{Presenter}, che notificano gli eventi scatenati dall'interfaccia grafica.
+Tali eventi, che rappresentano tipicamente il passaggio da uno stato all'altro,  necessitano una visione globale sull'applicazione ed una gestione centralizzata, compito che non può essere svolto da un semplice \class{Presenter}.
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

@@ -641,11 +641,22 @@ Per lo sviluppo dell'interfaccia grafica è stato utilizzato il pattern architet
 Si compone di tre elementi principali:
 
 \begin{itemize}
-	\item[Model]{offre un'interfaccia per reperire i dati che devono essere visualizzati, l'ottenimento dei quali può coinvolgere eventualmente anche la comunicazione tramite API.}
+	\itemdef{Model:}
+	offre un'interfaccia per reperire i dati che devono essere visualizzati, l'ottenimento dei quali può coinvolgere eventualmente anche la comunicazione tramite API.
 	
-	\itemdef{}
+	\itemdef{View:}
+	è la parte responsabile della rappresentazione dei dati.
+	La \textit{View} si occupa esclusivamente di eseguire chiamate al suo \textit{Presenter} ogni qual volta l'utente interagisca con l'interfaccia.
+	Tipicamente è un componente totalmente passivo, le cui funzionalità sono ridotte al minimo e contengono poca, o nessuna logica.
+	Non comunica direttamente con la parte di \textit{Model}, tutti i dati passano attraverso il \textit{Presenter}, lasciando alla \textit{View} il solo compito di rappresentarli visivamente.
 	
+	\itemdef{Presenter:}
+	implementa l'intera logica di presentazione, occupandosi di reperire i dati dal \textit{Model} ed eventualmente modificarli in modo che possano essere rappresentati.
+	Il \textit{Presenter} riceve i dati in input dall \textit{View}, li valida e si occupa della loro elaborazione.
+	Svolge il ruolo di mediatore tra \textit{Model} e \textit{View}, occupandosi di verificare sempre la coerenza tra dati e rappresentazione.
 \end{itemize}
+A causa della loro stretta interconnessione, Presenter e View detengono ognuno un riferimento all'altro, chiamando l'uno i metodi dell'altro.
+Ogni View necessita il suo specifico Presenter e tipicamente lo instanzia essa stessa.
 
 
 

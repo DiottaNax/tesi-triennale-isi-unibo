@@ -71,6 +71,8 @@
 \renewcommand{\contentsname}{Indice}  % Per il sommario
 \renewcommand{\listfigurename}{Elenco delle figure}
 \renewcommand{\listtablename}{Elenco delle tabelle}
+\newcommand{\itemdef}[1]{\item \textbf{#1}}
+
 
 \glsdisablehyper
 
@@ -100,6 +102,8 @@
 \newacronym{ISP}{ISP}{Internet Service Provider}
 \newacronym{OS}{OS}{Sistema Operativo}
 \newacronym{SRP}{SRP}{Single Responsibility Principle}
+\newacronym{MVP}{MVP}{Model-View-Presenter}
+\newacronym{MVC}{MVC}{Model-View-Controller}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -620,6 +624,25 @@ Il decoratore \texttt{StubbornDnsServer} permette di aggiungere le funzionalità
 In questo modo è possibile estendere i metodi per avviare e interrompere il server, garantendo, rispettivamente, l'aggiornamento e il ripristino automatico del \gls{DNS} predefinito sul dispositivo.
 L'adozione del pattern \textit{Decorator} risulta particolarmente utile, in quanto consente di isolare l'utilizzo di librerie specifiche per Windows a due sole classi, aprendo la possibilità ad un futuro sviluppo multi-platform.
 
+\section{Interfaccia grafica}
+
+L'interfaccia grafica è l'unica parte del software con cui l'utente interagirà direttamente.
+Il suo compito è essenzialmente quello di permettere all'utilizzatore l'accesso ai comandi della protezione, esposti tramite il server pipe dal servizio Windows.
+L'interfaccia agisce come client nella connessione tramite named pipe, inviando le richieste effettuate dall'utente e attendendo la risposta dal server.
+Poiché il software è un prototipo, come già sottolineato, l'obiettivo dell'analisi è proporre una soluzione che permetta facile modifica della parte visiva.
+L'interfaccia sarà sviluppata molto semplicemente, dando una rapida rappresentazione grafica ai comandi che è possibile effettuare.
+Dal punto di vista aziendale, il prototipo risulta efficace se la modifica dell'interfaccia, che verrà senza dubbio sottoposta al consiglio di grafici esperti, richiede poche o nulle modifiche di backend.
+
+\subsection{Model-View-Presenter}
+
+Per lo sviluppo dell'interfaccia grafica è stato utilizzato il pattern architetturale \textit{\gls{MVP}}.
+\gls{MVP} è un'architettura software che deriva dal famosissimo pattern \textit{\gls{MVC}}, nata con lo scopo di separare la logica di presentazione dall'interfaccia, in modo da migliorare la manutenibilità e il testing del codice.
+
+Si compone di tre elementi principali:
+
+\begin{itemize}
+	\itemdef[Model:]
+\end{itemize}
 
 
 

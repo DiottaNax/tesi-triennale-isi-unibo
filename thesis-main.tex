@@ -75,7 +75,7 @@
 \renewcommand{\listtablename}{Elenco delle tabelle}
 \newcommand{\itemdef}[1]{\item \textbf{#1}}
 \newcommand{\class}[1]{\texttt{#1}}
-\newcommand{\cs}{C\#}
+\newcommand{\cs}{C\# }
 
 \glsdisablehyper
 
@@ -107,6 +107,8 @@
 \newacronym{SRP}{SRP}{Single Responsibility Principle}
 \newacronym{MVP}{MVP}{Model-View-Presenter}
 \newacronym{MVC}{MVC}{Model-View-Controller}
+\newacronym{WPF}{WPF}{Windows Presentation Foundation}
+\newacronym{IDE}{IDE}{ambiente di sviluppo integrato}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -200,7 +202,6 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 %---------------------------------------------------
 % CAPITOLO 1
 %---------------------------------------------------
-
 \chapter{Contesto}
 \label{chap:contesto}
 
@@ -480,6 +481,7 @@ Ciò apre la possibilità ad una potenziale estensione multi-platform\footnote{L
 Di conseguenza, un'eventuale espansione a sistemi operativi diversi (ad esempio Linux) richiederebbe unicamente la modifica del modulo di filtraggio.
 
 \subsection{Organizzazione dei sotto-progetti}
+\label{ssec:organizzazione-sotto-progetti}
 
 Sulla base di questa suddivisione logica, ClientShield è stato organizzato in quattro diversi sotto-progetti:
 
@@ -713,15 +715,43 @@ Questa fase è stata indubbiamente resa più veloce e diretta grazie all'attento
 
 \section{Scelta del linguaggio}
 
-Il linguaggio scelto per lo sviluppo di ClientShield è stato \textit{C\#} con .NET 8.
+Il linguaggio scelto per lo sviluppo di ClientShield è stato \cs con .NET 8.
 Questa scelta è stata piuttosto naturale, sia perché è lo stesso linguaggio utilizzato dalla precedente implementazione di FlashStart, ma soprattutto grazie alle caratteristiche del linguaggio, che si adeguano perfettamente ai requisiti del software.
-Innanzitutto C\# è un linguaggio moderno, che consente uno sviluppo ed una manutenzione più semplici, grazie alla sua sintassi chiara e funzionalità avanzate.
-L'utilizzo di questo linguaggio permette un giusto compromesso tra efficienza e semplicità, garantendo una gestione automatica della memoria tramite la garbage collection\footnote{La \textbf{garbage collection} identifica e recupera automaticamente la memoria occupata da oggetti non più utilizzati, evitando che il programma esaurisca lo spazio disponibile.} ed una vasta disponibilità di librerie e framework che facilitano lo sviluppo.
+Innanzitutto \cs è un linguaggio moderno, che consente uno sviluppo ed una manutenzione più semplici, grazie alla sua sintassi chiara e funzionalità avanzate.
+L'utilizzo di questo linguaggio garantisce un ottimo equilibrio tra efficienza e semplicità, garantendo una gestione automatica della memoria tramite la garbage collection\footnote{La \textbf{garbage collection} identifica e recupera automaticamente la memoria occupata da oggetti non più utilizzati, evitando che il programma esaurisca lo spazio disponibile.} ed una vasta disponibilità di librerie e framework che facilitano lo sviluppo.
 
-Inoltre, come Java, C\# consente una programmazione multi-platform, ma rispetto ad esso risulta più indicato, in quanto l'ecosistema .NET è perfettamente integrato con Windows, target specifico di ClientShield.
-C\# ha 
+Analogamente a Java, \cs supporta la programmazione multi-platform, ma risulta più adatto per ClientShield grazie alla perfetta integrazione dell'ecosistema .NET con Windows, che rappresenta il target principale del software.
+\cs, infatti, ha accesso facilitato alle API di Windows grazie a librerie ufficiali sviluppate da Microsoft, che fornisce inoltre guide e documentazione utile all'implementazione e installazione di servizi Windows sviluppati in .NET. 
 
+Il linguaggio supporta anche l'implementazione di interfacce utente native attraverso \gls{WPF}, che permette l'applicazione del pattern \gls{MVP} scelto in fase di analisi.
+Inoltre la comunicazione tramite named pipes è supportata nativamente e vengono offerti diversi strumenti per la creazione di un installer.
+Ciò consente l'uso del medesimo linguaggio per tutti i progetti definiti in sezione \ref{ssec:organizzazione-sotto-progetti}, garantendo coerenza nell'intera codebase, oltre a permettere una struttura assolutamente simile a quella prevista.
 
+La scelta del linguaggio conduce all'ovvia adozione di Visual Studio come \gls{IDE}\footnote{Un \textbf{\gls{IDE}} è un software che fornisce strumenti come editor di testo, compilatori e debugger per facilitare la scrittura e la gestione del codice.}, che offre suggerimenti di codice, editor integrato di interfacce utente, ottimi strumenti di debugging, supporto per il version control di Git e tantissime altre funzionalità che lo rendono una scelta ottime per questo linguaggio.
+
+La directory di ClientShield segue la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}, è stata creata un'unica soluzione composta da tre dei quattro progetti previsti:
+\begin{itemize}
+	\item \textbf{Service:}
+	è un progetto di tipo Worker Service, template presente in Visual Studio e adatto allo sviluppo di un servizio Windows.
+	
+	\item \textbf{Client:}
+	è un progetto di tipo \gls{WPF}, adatto allo sviluppo di una moderna interfaccia grafica per sistemi Desktop.
+	
+	\item \textbf{Common:}
+	questo progetto contiene i messaggi e le configurazioni della comunicazione inter-processo, utilizzabili sia da Service, che da Client.
+\end{itemize}
+L'installer non è stato sviluppato nella versione prototipale.
+
+\subsection{Tecnologie di supporto}
+
+\subsection*{NuGet}
+Per lo sviluppo del software è stato
+
+\subsection*{Git}
+
+Per lo sviluppo è stato fondamentale l'utilizzo di Git\footnote{Sito ufficiale di Git: http://git-scm.com}, un sistema di versionamento, che permette un efficace controllo sulle modifiche, consentendo di preservare l'integrità del codice.
+Git è senza dubbio uno dei sistemi di versionamento più utilizzati, grazie alla capacita di gestire in modo molto efficiente anche progetti particolarmente complessi.
+Tale software è stato scelto anche grazie alla grande compatibilità con piattaforme cloud, come ad esempio GitHub\footnote{Sito ufficiale di GitHub: http://www.github.com}
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

@@ -141,8 +141,15 @@ Optional dedication.
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
+
+
+
+%---------------------------------------------------
+% CAPITOLO 1
+%---------------------------------------------------
+
 \chapterWithoutNumber{Introduzione}
-\phantomsection % to makr label work
+\phantomchapter % to makr label work
 \label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
@@ -256,6 +263,11 @@ L'adozione del protocollo \gls{DoH} consente quindi di ottenere la riservatezza 
 
 La novità principale del software prototipale illustrato in questa tesi, è dunque quella di fornire una soluzione per la transizione dalla tecnologia \gls{VPN}, all'adozione del protocollo \gls{DoH}.
 Di fondamentale importanza è inoltre l'analisi e la valutazione di soluzioni architetturali atte a garantire la naturale evoluzione del software, facilitando l'introduzione di nuove funzionalità.
+
+
+%---------------------------------------------------
+% CAPITOLO 2
+%---------------------------------------------------
 
 \chapter{Analisi dei Requisiti}
 \label{chap:analisi-dei-requisiti}
@@ -436,6 +448,10 @@ Per riassumere le azioni che un utente può compiere in ciascun momento è stato
 	\caption{navigazione dell'utente nell'app}
 	\label{fig:schema-casi-uso}
 \end{figure}
+
+%---------------------------------------------------
+% CAPITOLO 3
+%---------------------------------------------------
 
 \chapter{Analisi e progettazione}
 \label{chap:analisi-e-progettazione}
@@ -682,6 +698,10 @@ L'architettura proposta sostituisce all'implementazione di una coda di eventi, u
 Quest'ultima si configura come un \textit{observer} per i \class{Presenter}, che notificano gli eventi scatenati dall'interfaccia grafica.
 Tali eventi, che rappresentano tipicamente il passaggio da uno stato all'altro,  necessitano una visione globale sull'applicazione ed una gestione centralizzata, compito che, pertanto, non può essere svolto da un semplice \class{Presenter}.
 
+%---------------------------------------------------
+% CAPITOLO 4
+%---------------------------------------------------
+
 \chapter{Implementazione}
 
 La successiva, ed ultima, fase del progetto ha riguardato lo sviluppo, che ha compreso la scelta delle tecnologie da utilizzare e l'effettiva scrittura di codice.
@@ -695,6 +715,8 @@ Innanzitutto C\# è un linguaggio moderno, che consente uno sviluppo ed una manu
 L'utilizzo di questo linguaggio permette un giusto compromesso tra efficienza e semplicità, garantendo una gestione automatica della memoria tramite la garbage collection\footnote{La \textbf{garbage collection} identifica e recupera automaticamente la memoria occupata da oggetti non più utilizzati, evitando che il programma esaurisca lo spazio disponibile.} ed una vasta disponibilità di librerie e framework che facilitano lo sviluppo.
 
 Inoltre, come Java, C# consente una programmazione multi-platform, ma rispetto ad esso risulta più indicato, in quanto l'ecosistema .NET è perfettamente integrato con Windows, target specifico di ClientShield
+
+
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

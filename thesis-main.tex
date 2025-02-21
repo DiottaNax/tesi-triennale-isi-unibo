@@ -1,7 +1,6 @@
 % !TeX spellcheck = it_IT
 % !TeX root = thesis-main.tex
 \documentclass[12pt,a4paper,openright,twoside]{book}
-\usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage[hyperfootnotes=false]{hyperref}
 \usepackage{disi-thesis}
@@ -11,6 +10,10 @@
 \usepackage{shortcuts}
 \usepackage{float}
 \usepackage{pgfplots}
+
+\tolerance=1000
+\pgfplotsset{compat=1.18}
+
 
 % Package per disegnare directories
 \usepackage[edges]{forest}
@@ -303,14 +306,14 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 	Al termine della fase di registrazione, se avvenuta con successo, la protezione dovrà essere attivata e il dispositivo sarà visibile sulla piattaforma cloud.
 	
 	
-	\item \textbf{Permettere abilitazione/disabilitazione della protezione localmente:}
+	\item \textbf{Abilitare/disabilitare la protezione localmente:}
 	accedendo all'applicazione, qualora la protezione sia disattivata, si dovrà offrire la possibilità di attivarla.
 	Viceversa, se la protezione è attiva, l'utente avrà la possibilità di disattivarla inserendo un PIN.
 	Tale codice è un numero intero presente sulla piattaforma cloud e dunque visualizzabile soltanto da un amministratore di rete.
 	
 	\item \textbf{Controllare lo stato:}
 	l'applicazione dovrà periodicamente connettersi ai server FlashStart per verificare lo stato della protezione.
-	Questa operazione nell'implementazione prototipale ha                                              la funzione di verificare che il dispositivo sia ancora registrato sul cloud.
+	Questa operazione nell'implementazione prototipale ha la funzione di verificare che il dispositivo sia ancora registrato sul cloud.
 	La cancellazione dell'endpoint attraverso la piattaforma cloud, determinerà la disattivazione della protezione e la richiesta di una nuova registrazione.
 	
 	\item \textbf{Attivarsi automaticamente al riavvio:}
@@ -321,7 +324,6 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 \end{itemize}
 Queste funzionalità costituiscono il complessivo comportamento del prototipo sviluppato in questo progetto.
 L'obiettivo essenziale è dunque garantire la protezione del dispositivo, fungendo da intermediario tra l'endpoint e i server di FlashStart.
-
 Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il diagramma in figura \ref{fig:interazione-utente-software-server}.
 
 \begin{figure}[H]
@@ -330,24 +332,25 @@ Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShie
 	\caption{interazione tra utente, software e server FlashStart}
 	\label{fig:interazione-utente-software-server}
 \end{figure}
+
 Come precedentemente anticipato, la versione business dell'applicazione garantirà una serie di funzioni minori in più, di seguito riportate:
 
 \begin{itemize}
 	
-	\item \textbf{Blocco remoto della protezione:}
+	\itemdef{Blocco remoto della protezione:}
 	deve essere possibile disattivare la protezione da remoto, questa funzione può essere utilizzata sia dall'amministratore di rete, attraverso la piattaforma cloud, sia direttamente dai server FlashStart.
 	Durante i controlli di stato periodici, infatti, verrà verificata la validità della licenza e, se non risultasse valida, la protezione verrà disattivata automaticamente, impedendo qualsiasi tentativo di riattivazione locale.
 	
-	\item \textbf{Invio di notifiche:}
+	\itemdef{Invio di notifiche:}
 	durante la registrazione sarà possibile decidere di ricevere alcune notifiche dall'applicazione.
 	Se attivate, il dispositivo riceverà soltanto le notifiche riguardanti lo stato della protezione del dispositivo, ad esempio licenza scaduta o disabilitazione remota.
 	
-	\item \textbf{Applicazione unbranded:}
-	l'applicazione prima della registrazione dovrebbe avere un nome generico e non presentare alcun logo.
+	\itemdef{Applicazione unbranded:} 
+	l'applicazione prima della registrazione dovreb-be avere un nome generico e non presentare alcun logo.
 	Dopo la registrazione dovrà essere possibile ottenere informazioni sull'acquirente, come il nome scelto per il software e il logo da applicare.
 	L'interfaccia grafica dell'applicazione dovrà adattarsi alle informazioni ottenute durante la registrazione.
 	
-	\item \textbf{Controllo di stato periodico:}
+	\itemdef{Controllo di stato periodico:}
 	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà reperire più informazioni.
 	I dati supplementari, come ad esempio:
 	\begin{itemize}
@@ -435,6 +438,7 @@ Per riassumere le azioni che un utente può compiere in ciascun momento è stato
 \end{figure}
 
 \chapter{Analisi e progettazione}
+\label{chap:analisi-e-progettazione}
 
 \section{Struttura del progetto}
 
@@ -473,7 +477,7 @@ Sulla base di questa suddivisione logica, ClientShield è stato organizzato in q
 	Qui saranno specificati anche i tipi di messaggio che possono essere scambiati tra servizio e interfaccia, permettendo di mantenere sempre integrità di comunicazione tra i due sotto-progetti.
 	
 	\item \textbf{Installer:}
-	questo modulo dedicato alla creazione dell'installatore del software.
+	questo modulo è dedicato alla creazione dell'installer del software.
 	Si occuperà di automatizzare l'installazione del servizio e dell'interfaccia, garantendone il funzionamento corretto.
 \end{itemize}
 L'organizzazione del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
@@ -544,20 +548,20 @@ Nella nuova versione di ClientShield, invece, si è deciso di implementare un se
 
 \begin{itemize}
 	\item \textbf{Semplicità di implementazione:}
-	configurare un processo che ascolta sulla porta 53 e risolva le richieste \gls{DNS} è decisamente più semplice rispetto alla creazione di una scheda di rete virtuale.
+	configurare un processo che ascolti sulla porta 53 e risolva le richieste \gls{DNS} è decisamente più semplice rispetto alla creazione di una scheda di rete virtuale.
 	Tale scelta, inoltre, limita anche il rischio di incompatibilità con software terzi che gestiscono altre schede di rete virtuali.
 	
 	\item \textbf{Manutenibilità:}
 	un server locale consente di isolare la responsabilità del software semplicemente al filtraggio.
-	Questa soluzione permette una maggiore chiarezza e una più corretta aderenza al \gls{SRP}.%, descritto in \cite{Martin2002}.
+	Questa soluzione permette una maggiore chiarezza e una più corretta aderenza al \gls{SRP}. %, descritto in \cite{Martin2002}.
 	In questo modo, infatti, il modulo di protezione gestisce solo richieste \gls{DNS}, migliorando il debugging, che sarà limitato ad un singolo componente.
 	
 	\item \textbf{Portabilità:}
 	l'implementazione di un server \gls{DNS} non ha dipendenze specifiche dal sistema operativo.
-	Le soluzioni esplorate in seguito consentono di relegare l'interazione diretta con l'\gls{OS} alla sola impostazione del server locale come \gls{DNS} predefinito.
+	Le soluzioni esplorate in seguito consentono di relegare l'interazione diretta con il sistema operativo alla sola impostazione del server locale come \gls{DNS} predefinito.
 \end{itemize}
 
-In sintesi, il nuovo design del servizio Windows prevede l'implementazione di un server named pipe che, su comando dell'utente, interagisca con il servizio di protezione per avviare o interrompere l'esecuzione di un server \gls{DNS} locale, impostato come predefinito di sistema.
+In sintesi, il nuovo design del servizio Windows prevede l'implementazione di un server named pipe che, su comando dell'utente, interagisca con il servizio di protezione per avviare l'esecuzione di un server \gls{DNS} locale, impostandolo come predefinito di sistema, oppure interromperla.
 
 \subsection{Analisi della protezione}
 
@@ -568,7 +572,7 @@ Inoltre, deve monitorare lo stato del server \gls{DNS} e interagire con esso, pe
 In aggiunta, il servizio deve occuparsi anche della gestione delle credenziali, memorizzando il codice utente fornito durante la registrazione e garantendo il ripristino della sessione al riavvio del dispositivo.
 
 Per una corretta delegazione delle responsabilità e per ottenere semplicità nella comunicazione con diversi componenti, è stato sfruttato il pattern \textit{Facade}, definito in \cite{GoF94}.
-Questo pattern fornisce una semplice interfaccia che consenta la gestione di funzionalità distribuite su più classi.
+Questo pattern fornisce una semplice interfaccia che consente la gestione di funzionalità distribuite su più classi.
 
 Dalla struttura delle classi, illustrata in figura \ref{fig:protezione-facade-pattern}, è possibile constatare che la classe \texttt{ServerNamedPipe} si occupa esclusivamente di ricevere ed elaborare le richieste da parte del client, delegando l'esecuzione di qualsiasi operazione alla classe \texttt{ProtectionManager}.
 Quest'ultima funge da punto di raccordo tra le diverse funzionalità offerte dal software, gestendole in maniera organizzata, permettendo una granularità maggiore che facilita la manutenzione del codice.
@@ -579,7 +583,7 @@ Quest'ultima funge da punto di raccordo tra le diverse funzionalità offerte dal
 	\label{fig:protezione-facade-pattern}
 \end{figure}
 \texttt{ProtectionManager} coordina l'esecuzione delle funzionalità offerte dalle classi gestite, consentendo una gestione implicita delle credenziali affidata completamente a \texttt{CredentialManager}.
-Inoltre, \texttt{ProtectionManager} verifica costantemente la coerenza tra lo stato dei componenti e, se presente una sessione attiva, avvia automaticamente la protezione all'instanziazione.
+Inoltre, \texttt{ProtectionManager} verifica costantemente la coerenza tra lo stato dei componenti e, se presente una sessione attiva, avvia automaticamente la protezione.
 
 
 \subsection{Analisi server DNS}
@@ -629,6 +633,7 @@ L'adozione del pattern \textit{Decorator} risulta particolarmente utile, in quan
 L'interfaccia grafica è l'unica parte del software con cui l'utente interagirà direttamente.
 Il suo compito è essenzialmente quello di permettere all'utilizzatore l'accesso ai comandi della protezione, esposti tramite il server pipe dal servizio Windows.
 L'interfaccia agisce come client nella connessione tramite named pipe, inviando le richieste effettuate dall'utente e attendendo la risposta dal server.
+
 Poiché il software è soltanto un prototipo, l'obiettivo dell'analisi è proporre una soluzione che permetta una facile modifica della parte visiva.
 L'interfaccia sarà sviluppata molto semplicemente, dando solo una rapida rappresentazione grafica ai comandi che è possibile effettuare.
 Dal punto di vista aziendale, il prototipo risulta efficace se la modifica dell'interfaccia, che verrà senza dubbio sottoposta al consiglio di grafici esperti, richiede poche o nulle modifiche di backend.
@@ -639,7 +644,6 @@ Per lo sviluppo dell'interfaccia grafica è stato utilizzato il pattern architet
 \gls{MVP} è un'architettura software che deriva dal famosissimo pattern \textit{\gls{MVC}}, nata con lo scopo di separare la logica di presentazione dall'interfaccia, in modo da migliorare la manutenibilità e il testing del codice.
 
 Si compone di tre elementi principali:
-
 \begin{itemize}
 	\itemdef{Model:}
 	offre un'interfaccia per reperire i dati che devono essere visualizzati, l'ottenimento dei quali può coinvolgere eventualmente anche la comunicazione tramite API.
@@ -650,9 +654,10 @@ Si compone di tre elementi principali:
 	Tipicamente è un componente totalmente passivo, le cui funzionalità sono ridotte al minimo e contengono poca, o nessuna logica.
 	Non comunica direttamente con la parte di \textit{Model}, tutti i dati passano attraverso il \textit{Presenter}, lasciando alla \textit{View} il solo compito di rappresentarli visivamente.
 	
-	\itemdef{Presenter:}
-	implementa l'intera logica di presentazione, occupandosi di reperire i dati dal \textit{Model} ed eventualmente modificarli in modo che possano essere rappresentati.
-	Il \textit{Presenter} riceve i dati in input dall \textit{View}, li valida e si occupa della loro elaborazione.
+	\itemdef{Presenter:} implementa l'intera logica di presentazione, occupandosi
+	di reperire i dati dal \textit{Model} ed eventualmente modificarli in modo che
+	possano essere rappresentati.
+	Il \textit{Presenter}, inoltre, riceve i dati in input dalla \textit{View}, li valida e si occupa della loro elaborazione.
 	Svolge il ruolo di mediatore tra \textit{Model} e \textit{View}, occupandosi di verificare sempre la coerenza tra dati e rappresentazione.
 \end{itemize}
 A causa della loro stretta interconnessione, Presenter e View detengono riferimenti reciproci, consentendo ad ognuno di chiamare i metodi dell'altro.
@@ -668,14 +673,28 @@ In figura \ref{fig:mvp-diagramma-sequenza} è possibile visualizzare i component
 L'immagine offre una rappresentazione delle interazioni che dovrebbero avvenire in una corretta implementazione dell'architettura.
 
 Nell'interfaccia grafica di ClientShield non esiste un vero e proprio Model, i dati da rappresentare risultano essere gli stati della protezione.
-Pertanto, a svolgere tale ruolo è \class{PipeClient}, che si occupa di inviare e ricevere dati dal servizio Windows, ottenendo risposte sull'esito delle operazioni e sullo stato della protezione.
+Pertanto, a svolgere tale ruolo è \class{PipeClient}, che è il responsabile della comunicazione con il servizio Windows, dal quale ottiene risposte sull'esito delle operazioni e sullo stato della protezione.
 
 Stando a quanto riportato in sezione \ref{sec:casi-d-uso}, le possibili \class{View} sono tre e rispecchiano gli stati di ClientShield: non registrato, protezione attiva, protezione disattivata.
 Ognuna di esse dovrà avere il proprio \class{Presenter} che consenta di validare e processare i dati delle richieste utente.
 
 L'architettura proposta sostituisce all'implementazione di una coda di eventi, utilizzata in \cite{Ramsdale2010}, l'utilizzo della classe \class{NavigationController}.
 Quest'ultima si configura come un \textit{observer} per i \class{Presenter}, che notificano gli eventi scatenati dall'interfaccia grafica.
-Tali eventi, che rappresentano tipicamente il passaggio da uno stato all'altro,  necessitano una visione globale sull'applicazione ed una gestione centralizzata, compito che non può essere svolto da un semplice \class{Presenter}.
+Tali eventi, che rappresentano tipicamente il passaggio da uno stato all'altro,  necessitano una visione globale sull'applicazione ed una gestione centralizzata, compito che, pertanto, non può essere svolto da un semplice \class{Presenter}.
+
+\chapter{Implementazione}
+
+La successiva, ed ultima, fase del progetto ha riguardato lo sviluppo, che ha compreso la scelta delle tecnologie da utilizzare e l'effettiva scrittura di codice.
+Questa fase è stata indubbiamente resa più veloce e diretta grazie all'attento lavoro di documentazione, analisi e progettazione descritto nei capitoli precedenti.
+
+\section{Scelta del linguaggio}
+
+Il linguaggio scelto per lo sviluppo di ClientShield è stato \textit{C\#} con .NET 8.
+Questa scelta è stata piuttosto naturale, sia perché è lo stesso linguaggio utilizzato dalla precedente implementazione di FlashStart, ma soprattutto grazie alle caratteristiche del linguaggio, che si adeguano perfettamente ai requisiti del software.
+Innanzitutto C\# è un linguaggio moderno, che consente uno sviluppo ed una manutenzione più semplici, grazie alla sua sintassi chiara e funzionalità avanzate.
+L'utilizzo di questo linguaggio permette un giusto compromesso tra efficienza e semplicità, garantendo una gestione automatica della memoria tramite la garbage collection\footnote{La \textbf{garbage collection} identifica e recupera automaticamente la memoria occupata da oggetti non più utilizzati, evitando che il programma esaurisca lo spazio disponibile.} ed una vasta disponibilità di librerie e framework che facilitano lo sviluppo.
+
+Inoltre, come Java, C# consente una programmazione multi-platform, ma rispetto ad esso risulta più indicato, in quanto l'ecosistema .NET è perfettamente integrato con Windows, target specifico di ClientShield
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

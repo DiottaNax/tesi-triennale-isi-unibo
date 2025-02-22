@@ -586,6 +586,7 @@ Nella nuova versione di ClientShield, invece, si è deciso di implementare un se
 In sintesi, il nuovo design del servizio Windows prevede l'implementazione di un server named pipe che, su comando dell'utente, interagisca con il servizio di protezione per avviare l'esecuzione di un server \gls{DNS} locale, impostandolo come predefinito di sistema, oppure interromperla.
 
 \subsection{Analisi della protezione}
+\label{ssec:analisi-protezione}
 
 L'avvio della protezione è un problema più complesso di quanto possa sembrare.
 Per attivarla è necessaria l'interazione con molti componenti del sistema.
@@ -609,6 +610,7 @@ Inoltre, \texttt{ProtectionManager} verifica costantemente la coerenza tra lo st
 
 
 \subsection{Analisi server DNS}
+\label{ssec:analisi-server-dns}
 
 Il server \gls{DNS} locale rappresenta il nucleo centrale di ClientShield, poiché gestisce sia la risoluzione dei domini che l'applicazione dei filtri.
 Per garantire flessibilità ed estensibilità, il server è stato suddiviso in più componenti, ciascuno con una funzionalità specifica.
@@ -745,13 +747,59 @@ L'installer non è stato sviluppato nella versione prototipale.
 \subsection{Tecnologie di supporto}
 
 \subsection*{NuGet}
-Per lo sviluppo del software è stato
+
+Per lo sviluppo di ClientShield sono state utilizzate diverse librerie esterne, perciò, allo scopo di gestire le dipendenze del progetto, è stato utilizzato NuGet\footnote{Sito ufficiale NuGet: \url{http://nuget.org}}, il gestore di pacchetti ufficiale per l'ecosistema .NET.
+
+NuGet permette di aggiungere, aggiornare e rimuovere pacchetti esterni con facilità, evitando la necessità di includere manualmente le librerie.
+Ha un ruolo chiave nel processo di sviluppo, in quanto, grazie al controllo di versione sulle dipendenze, segnala problemi di incompatibilità tra le librerie di un progetto, evitando potenziali errori difficili da individuare manualmente.
 
 \subsection*{Git}
 
-Per lo sviluppo è stato fondamentale l'utilizzo di Git\footnote{Sito ufficiale di Git: http://git-scm.com}, un sistema di versionamento, che permette un efficace controllo sulle modifiche, consentendo di preservare l'integrità del codice.
+Per lo sviluppo è stato fondamentale l'utilizzo di Git\footnote{Sito ufficiale di Git: \url{http://git-scm.com}}, un sistema di versionamento, che permette un efficace controllo sulle modifiche, consentendo di preservare l'integrità del codice.
 Git è senza dubbio uno dei sistemi di versionamento più utilizzati, grazie alla capacita di gestire in modo molto efficiente anche progetti particolarmente complessi.
-Tale software è stato scelto anche grazie alla grande compatibilità con piattaforme cloud, come ad esempio GitHub\footnote{Sito ufficiale di GitHub: http://www.github.com}
+
+Il software consente di tenere traccia di ogni modifica apportata al codice, permettendo di ripristinare versioni precedenti in caso di errori o di confrontare diversi stati del progetto. Nel contesto di ClientShield, trattandosi di un prototipo sviluppato da zero, il lavoro si è concentrato prevalentemente su un unico branch principale, evitando la necessità di gestire rami multipli tipici di progetti più strutturati.
+Per migliorare la leggibilità dello storico delle modifiche è stata adottata una struttura standardizzata per i commit, preceduti da tag identificativi che ne indicano il tipo: ad esempio i tag \texttt{[DOC]} per la documentazione o \texttt{[NEW]} per le nuove funzionalità.
+
+Un ulteriore vantaggio di Git è la grande compatibilità con piattaforme cloud come GitHub\footnote{Sito ufficiale di GitHub: \url{http://github.com}}, consente di lavorare su computer diversi con codice sempre sincronizzato.
+
+\subsection*{Librerie di gestione JSON}
+
+In fase di analisi si è scelto di utilizzare JSON per la comunicazione inter-processo.
+Tale scelta ha reso possibile l'utilizzo di un meccanismo di deserializzazione che avesse un modello di ereditarietà, in modo da poter effettuare un casting intelligente.
+
+A tal scopo è stata utilizzata la libreria JsonSubTypes\footnote{Sito ufficiale JsonSubTypes: \url{http//manuc66.github.io/JsonSubTypes/}}, che consente di definire una classe base comune per tutte le richieste, semplificando la gestione dei messaggi.
+Invece di trattare ogni richiesta come entità separata, il sistema utilizza un tipo di richiesta generico, che viene poi convertito in richieste specifiche, ad esempio di autorizzazione o registrazione.
+Il controllo e la conversione da messaggio generico a specifico sono gestiti direttamente dalla libreria, eliminando la necessità di controlli manuali sulla struttura delle richieste e migliorando la pulizia del codice.
+
+La serializzazione e la deserializzazione sono gestite attraverso la libreria Newtonsoft.Json\footnote{Sito ufficiale Newtonsoft.Json: \url{http://www.newtonsoft.com/json}}. Questa libreria è in grado di lavorare assieme a JsonSubTypes per la corretta conversione da classe a JSON e viceversa, offrendo semplicità, ottime prestazioni e individuazione automatica di errori di conversione.
+
+\subsection{Implementazione progetto Service}
+
+Il progetto per l'implementazione del servizio Windows è stato sviluppato a partire dalla guida \cite{MicrosoftServices2021} realizzata da Microsoft.
+Il servizio è stato sviluppato, come suggerito dalla guida, attraverso un \class{BackgroundService} che, all'avvio, instanzia un \class{ServerNamedPipe} e un \class{ProtectionManager}, adeguatamente introdotti nella sezione \ref{ssec:analisi-protezione} ed illustrati in figura \ref{fig:protezione-facade-pattern}.
+
+\paragraph{ServerNamedPipe} è una classe implementata facendo uso delle librerie di sistema, agisce da server per la comunicazione inter-processo.
+Il server sarà sempre in ascolto sulla pipe di nome "FlashStart-ClientShield-Service-Pipe" finché il servizio Windows è attivo.
+Il costruttore necessita il passaggio di un oggetto \class{ProtectionManager}, col quale il server si interfaccia per eseguire i comandi ricevuti dalla named pipe.
+
+\paragraph{ProtectionManager} è una classe dedita alla gestione generale del servizio di protezione, garantendo il coordinamento tra la gestione delle credenziali, la comunicazione con le API FlashStart e l'esecuzione del server \gls{DNS} locale.
+Questa classe funge da punto di raccordo tra le classi che offrono i suddetti servizi:
+\begin{itemize}
+	\itemdef{CredentialManager:} viene utilizzato all'instanziazione di {ProtectionManager} per controllare l'esistenza di un cliente già registrato.
+	Durante le fasi di registrazione e logout questa classe di occupa di salvare o eliminare le credenziali sul dispositivo.
+	
+	\itemdef{FlashStartClient:} viene utilizzato durante tutta l'esecuzione del servizio per interfacciarsi con le API di FlashStart.
+	
+	\itemdef{StubbornDnsServer:} classe dedicata alla gestione del server \gls{DNS} locale, viene inizializzato da \class{ProtectionManager} all'avvio della protezione.
+\end{itemize}
+
+\paragraph {CredentialManager} utilizza il gestore di credenziali Windows per la memorizzazione del Client ID, cioè il codice utente univoco necessario per la comunicazione con i server FlashStart.
+Questa classe è sviluppata come wrapper dell'omonimo modulo appartenente alla libreria Meziantou.Framework.Win32, gestendo automaticamente le configurazioni necessarie per consentire una più facile interazione da parte di \class{ProtectionManager}.
+I metodi esposti consentono in particolare la registrazione, l'eliminazione, l'aggiornamento e la visualizzazione (se presente) del codice utente.\\
+
+\paragraph{FlashStartClient} utilizza un client HTTP fornito dalle librerie di sistema per effettuare richieste ai server FlashStart, impostandone automaticamente l'header di autenticazione.
+Questa classe espone metodi per permettere di effettuare le richieste di \textit{registrazione}, \textit{autorizzazione} e \textit{check}.
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

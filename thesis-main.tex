@@ -793,7 +793,7 @@ Il costruttore necessita il passaggio di un oggetto \class{ProtectionManager}, c
 Questa classe funge da punto di raccordo tra le classi che offrono i suddetti servizi:
 \begin{itemize}
 	\itemdef{CredentialManager:} viene utilizzato all'instanziazione di {ProtectionManager} per controllare l'esistenza di un cliente già registrato.
-	Durante le fasi di registrazione e logout questa classe di occupa di salvare o eliminare le credenziali sul dispositivo.
+	Durante le fasi di registrazione e logout questa classe si occupa di salvare o eliminare le credenziali sul dispositivo.
 	
 	\itemdef{FlashStartClient:} viene utilizzato durante tutta l'esecuzione del servizio per interfacciarsi con le API di FlashStart.
 	
@@ -827,7 +827,7 @@ La soluzione proposta imposta come unico indirizzo valido l'IP 127.0.0.1, dove o
 All'avvio del server locale, \class{StubbornDnsServer} utilizza l'evento \textit{NetworkChange}, appartenente alle librerie di sistema, per monitorare ogni cambiamento alle configurazioni di rete, assicurandosi costantemente che il server \gls{DNS} rimanga impostato correttamente.
 All'arresto, la gestione dell'evento viene disattivata e il \gls{DNS} viene ripristinato alla modalità dinamica, garantendo che il sistema torni al suo stato originale.\\
 
-L'implementazione del server \gls{DNS} di base segue uno sviluppo molto modulare sfruttando vari componenti che ne consento la facile estensione e modifica.
+L'implementazione del server \gls{DNS} di base segue uno sviluppo molto modulare sfruttando varie componenti che ne consentono la facile estensione e modifica.
 Non solo, lo sviluppo modulare consente di suddividere i compiti da svolgere in routine eseguibili da thread in concorrenza, rendendo la risoluzione dei domini più efficiente.
 Il server necessita di due componenti fondamentali:
 \begin{itemize}
@@ -870,7 +870,7 @@ Infine, all'arresto, il server si occupa di interrompere correttamente l'esecuzi
 Sebbene si sia discusso del possibile sviluppo di un'interfaccia grafica multi-piattaforma, il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
 La scelta è stata motivata principalmente dalla maggiore familiarità con la libreria, che offre un'ottima integrazione con .NET.
 Tuttavia, è doveroso sottolineare che il progetto segue l'architettura software analizzata in sezione \ref{ssec:analisi-mvp}.
-Pertanto le modifiche necessarie per un'eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
+Pertanto le modifiche necessarie per un eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
 Inoltre è opportuno sottolineare che, grazie ad una corretta aderenza al pattern \gls{MVP}, tali modifiche sono da considerarsi semplici e di impatto minore, in quanto la totale passività della parte visiva ha concesso di spostare l'intera logica all'interno delle classi \class{Presenter}.
 
 L'obiettivo di quest'implementazione non è soltanto agevolare uno sviluppo multi-platform, ma anche garantire la modifica dell'interfaccia con il minimo intervento.

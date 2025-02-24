@@ -862,13 +862,13 @@ Infine, all'arresto, il server si occupa di interrompere correttamente l'esecuzi
 
 \section{Implementazione progetto Client}
 
-Sebbene si sia parlato del possibile sviluppo di un'interfaccia grafica multi-piattaforma, in realtà il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
-La scelta è dovuta principalmente ad una maggiore conoscenza pregressa della libreria.
+Sebbene si sia discusso del possibile sviluppo di un'interfaccia grafica multi-piattaforma, il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
+La scelta è stata motivata principalmente dalla maggiore familiarità con la libreria, che offre un'ottima integrazione con .NET.
 Tuttavia, è doveroso sottolineare che il progetto segue l'architettura software analizzata in sezione \ref{ssec:analisi-mvp}.
 Pertanto le modifiche necessarie per un'eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
 Inoltre è opportuno sottolineare che, grazie ad una corretta aderenza al pattern \gls{MVP}, tali modifiche sono da considerarsi semplici e di impatto minore, in quanto la totale passività della parte visiva ha concesso di spostare l'intera logica all'interno delle classi \class{Presenter}.
 
-L'idea dietro quest'implementazione non è soltanto di facilitare uno sviluppo multi-platform, ma anche di garantire la modifica dell'interfaccia con il minimo intervento.
+L'obiettivo di quest'implementazione non è soltanto agevolare uno sviluppo multi-platform, ma anche garantire la modifica dell'interfaccia con il minimo intervento.
 Ciò facilita la correzione dell'aspetto grafico, che risulta soltanto abbozzato nell'implementazione prototipale, in quanto poco interessante dal punto di vista ingegneristico, ma che è cruciale per uno sviluppo business.
 \begin{figure}[H]
 	\centering
@@ -877,7 +877,7 @@ Ciò facilita la correzione dell'aspetto grafico, che risulta soltanto abbozzato
 	\label{fig:mvp-struttura-classi}
 \end{figure}
 In figura \ref{fig:mvp-struttura-classi} viene illustrata la struttura delle classi.
-Come intuibile, l'applicazione è strutturata su tre schermate principali, seguendo la logica illustrata in figura \ref{fig:schema-casi-uso}:
+L'applicazione è strutturata su tre schermate principali e segue la logica illustrata in figura \ref{fig:schema-casi-uso}:
 \begin{itemize}
 	\itemdef{Schermata di registrazione:} è la schermata dedicata al form di registrazione del dispositivo.
 	Deve essere visualizzabile quando non esiste già un utente FlashStart sul dispositivo e permettere l'inserimento dei campi riguardanti la chiave di profilo e il nome del dispositivo.
@@ -910,10 +910,16 @@ La funzione è implementata attraverso il metodo \textit{NavigateNext}, chiamato
 \class{AppController} al verificarsi di un evento cambia adeguatamente le schermata visibile, instanziando la corretta \class{View} con il relativo \class{Presenter} e interagendo con la finestra dell'applicazione.
 
 \paragraph{PipeClient} è la classe responsabile della comunicazione con il servizio Windows.
-All'avvio dell'applicazione si connette come client sulla named pipe dedicata a ClientShield, permettendo l'invio dei comandi relativi alla regisrazione, autorizzazione e verifica dello stato, occupandosi della serializzazione e deserializzazione dei messaggi.
+All'avvio dell'applicazione si connette come client sulla named pipe dedicata a ClientShield, permettendo l'invio dei comandi per la registrazione, autorizzazione e verifica dello stato della protezione, occupandosi della serializzazione e deserializzazione dei messaggi.\\
 
-
-
+In figura \ref{fig:schermate-app} è visibile un'anteprima dell'interfaccia utente di ClientShield.
+Sono rappresentate le schermate di gestione della protezione (disabilitazione/abilitazione) e di registrazione.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/schermate.pdf}
+	\caption{Interfaccia utente ClientShield}
+	\label{fig:schermate-app}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

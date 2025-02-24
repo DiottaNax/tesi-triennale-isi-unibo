@@ -663,6 +663,7 @@ L'interfaccia sarà sviluppata molto semplicemente, dando solo una rapida rappre
 Dal punto di vista aziendale, il prototipo risulta efficace se la modifica dell'interfaccia, che verrà senza dubbio sottoposta al consiglio di grafici esperti, richiede poche o nulle modifiche di backend.
 
 \subsection{Model-View-Presenter}
+\label{ssec:analisi-mvp}
 
 Per lo sviluppo dell'interfaccia grafica è stato utilizzato il pattern architetturale \textit{\gls{MVP}}.
 \gls{MVP} è un'architettura software che deriva dal famosissimo pattern \textit{\gls{MVC}}, nata con lo scopo di separare la logica di presentazione dall'interfaccia, in modo da migliorare la manutenibilità e il testing del codice.
@@ -858,6 +859,59 @@ La risoluzione del dominio da parte del server prevede tre fasi:
 	\item Una volta ottenuta la risposta dal server \gls{DNS} esterno, viene inviata al processo che aveva richiesto la risoluzione.
 \end{enumerate}
 Infine, all'arresto, il server si occupa di interrompere correttamente l'esecuzione parallela dei task.
+
+\section{Implementazione progetto Client}
+
+Sebbene si sia parlato del possibile sviluppo di un'interfaccia grafica multi-piattaforma, in realtà il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
+La scelta è dovuta principalmente ad una maggiore conoscenza pregressa della libreria.
+Tuttavia, è doveroso sottolineare che il progetto segue l'architettura software analizzata in sezione \ref{ssec:analisi-mvp}.
+Pertanto le modifiche necessarie per un'eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
+Inoltre è opportuno sottolineare che, grazie ad una corretta aderenza al pattern \gls{MVP}, tali modifiche sono da considerarsi semplici e di impatto minore, in quanto la totale passività della parte visiva ha concesso di spostare l'intera logica all'interno delle classi \class{Presenter}.
+
+L'idea dietro quest'implementazione non è soltanto di facilitare uno sviluppo multi-platform, ma anche di garantire la modifica dell'interfaccia con il minimo intervento.
+Ciò facilita la correzione dell'aspetto grafico, che risulta soltanto abbozzato nell'implementazione prototipale, in quanto poco interessante dal punto di vista ingegneristico, ma che è cruciale per uno sviluppo business.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/mvp-classes.png}
+	\caption{Struttura delle classi dell'interfaccia grafica}
+	\label{fig:mvp-struttura-classi}
+\end{figure}
+In figura \ref{fig:mvp-struttura-classi} viene illustrata la struttura delle classi.
+Come intuibile, l'applicazione è strutturata su tre schermate principali, seguendo la logica illustrata in figura \ref{fig:schema-casi-uso}:
+\begin{itemize}
+	\itemdef{Schermata di registrazione:} è la schermata dedicata al form di registrazione del dispositivo.
+	Deve essere visualizzabile quando non esiste già un utente FlashStart sul dispositivo e permettere l'inserimento dei campi riguardanti la chiave di profilo e il nome del dispositivo.
+	
+	\itemdef{Schermata di abilitazione della protezione:} è una semplice schermata visualizzabile quando il dispositivo ha già un utente FlashStart registrato, ma la protezione è disattivata.
+	Nell'implementazione prototipale dovrà contenere due bottoni: uno per l'attivazione della protezione, l'altro per cancellare l'utente dal dispositivo, riportando necessariamente l'applicazione alla schermata di registrazione.
+	
+	\itemdef{Schermata di disabilitazione della protezione:} è una schermata visualizzabile quando il dispositivo ha già un utente FlashStart registrato e la protezione è attiva.
+	La schermata deve presentare un campo per l'inserimento del PIN di disabilitazione (visualizzabile dalla piattaforma cloud) ed un bottone per eseguire la richiesta di disabilitazione.
+	Se il codice è corretto la protezione viene disattivata.
+\end{itemize}
+La struttura di ognuna di queste schermate è definita attraverso il linguaggio XAML implementato da WPF.
+Ciò permette di creare le schermate definendo la loro struttura tramite la semplice sintassi offerta dal linguaggio di markup, che consente di legare la schermata XAML a una classe code-behind\footnote{Una classe \textbf{code-behind} è una classe \cs associata a un file XAML che gestisce eventi e logica dell'interfaccia utente, permettendo l'interazione diretta con i controlli definiti nel XAML.} specifica.
+Questo consente alla classe associata di interagire direttamente con gli elementi definiti nello XAML senza doverli dichiarare esplicitamente nel codice.
+
+Per ognuna delle suddette schermate sono state realizzate delle specifiche classi \class{View}, responsabile della visualizzazione e \class{Presenter}, responsabile della presentazione dei dati da visualizzare.
+
+\paragraph{View} è il gruppo di classi code-behind corrispondenti alle schermate XAML.
+Ogni \class{View} è implementata estendendo la classe \class{UserControl} fornita da \gls{WPF}, che permette di definire gruppi di elementi presenti in una schermata, consentendo di utilizzare la stessa finestra per mostrare schermate differenti.
+Ogni \class{View} ha il solo scopo di raccogliere input dall'utente e trasmetterli al proprio \class{Presenter}.
+La validazione dei dati è completamente effettuata da quest'ultimo, che, in caso di errore notifica alla \class{View} un messaggio da mostrare all'utente.
+
+\paragraph{Presenter} è il gruppo di classi che gestiscono la logica di presentazione di ciascuna schermata.
+Ogni \class{Presenter} si occupa di validare gli input ottenuti dalla \class{View} e di trasmetterli alla classe \class{PipeClient} per l'elaborazione della richiesta inter-processo.
+In caso di un qualsiasi errore, il \class{Presenter} si occupa della creazione di un messaggio per permettere alla \class{View} di mostrare la causa all'utente.
+Se l'operazione ha avuto successo, invece, notifica l'evento avvenuto alla classe \class{AppController}, che gestirà eventualmente il cambio di schermata.
+
+\paragraph{AppController} è la classe dedicata alla logica di navigazione dell'applicazione. 
+La funzione è implementata attraverso il metodo \textit{NavigateNext}, chiamato quando si verifica un evento che cambia lo stato del sistema, come l'inizializzazione, la registrazione o l'attivazione/disattivazione della protezione.
+\class{AppController} al verificarsi di un evento cambia adeguatamente le schermata visibile, instanziando la corretta \class{View} con il relativo \class{Presenter} e interagendo con la finestra dell'applicazione.
+
+\paragraph{PipeClient} è la classe responsabile della comunicazione con il servizio Windows.
+All'avvio dell'applicazione si connette come client sulla named pipe dedicata a ClientShield, permettendo l'invio dei comandi relativi alla regisrazione, autorizzazione e verifica dello stato, occupandosi della serializzazione e deserializzazione dei messaggi.
+
 
 
 

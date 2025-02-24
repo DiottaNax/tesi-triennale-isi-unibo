@@ -624,7 +624,7 @@ Inoltre, la suddivisione delle funzionalità consente il più facile impiego di 
 	\caption{Strategy pattern per Server DNS}
 	\label{fig:dns-strategy-pattern}
 \end{figure}
-Come illustrato in figura \ref{fig:dns-strategy-pattern}, \texttt{ServerDns} utilizza il pattern \textit{Strategy} per la risoluzione dei domini.
+Come illustrato in figura \ref{fig:dns-strategy-pattern}, \texttt{DnsServer} utilizza il pattern \textit{Strategy} per la risoluzione dei domini.
 Delegando la risoluzione dei domini a una classe secondaria, \texttt{DnsResolver}, è possibile implementare tecnologie differenti.
 Sebbene i requisiti del prototipo richiedano la sola implementazione \gls{DoH}, FlashStart ha già implementato delle API che utilizzano il protocollo \gls{DoT}.
 Se in futuro l'azienda decidesse di adottare \gls{DoT} o un qualsiasi altro tipo di tecnologia per la risoluzione dei domini, sarà sufficiente sostituire il \texttt{DnsResolver} con un'implementazione specifica, senza modificare il resto del sistema.
@@ -633,7 +633,7 @@ Se in futuro l'azienda decidesse di adottare \gls{DoT} o un qualsiasi altro tipo
 Un altro aspetto fondamentale riguarda la gestione delle richieste in ingresso.  
 Poiché la porta 53, dedicata alla comunicazione \gls{DNS}, può essere gestita da un solo componente alla volta, la ricezione dei pacchetti è affidata alla classe \texttt{SocketListener}. 
 Tale entità ha il compito di minimizzare i tempi di gestione delle query in arrivo, prevenendo la perdita di richieste.
-Per massimizzare l'efficienza, \texttt{SocketListener} utilizzerà una coda di messaggi, permettendo alla classe \texttt{ServerDns} di elaborare le richieste in parallelo.
+Per massimizzare l'efficienza, \texttt{SocketListener} utilizzerà una coda di messaggi, permettendo alla classe \texttt{DnsServer} di elaborare le richieste in parallelo.
 Se necessario, potranno essere utilizzati worker dedicati per ottimizzare le prestazioni e garantire l'elevata reattività del sistema.
 
 \begin{figure}[H]
@@ -648,7 +648,7 @@ Questa fase è decisamente delicata, perché rappresenta il punto in cui ClientS
 La soluzione utilizzata in questo caso, illustrata in figura \ref{fig:dns-decorator-pattern}, sfrutta il pattern \textit{Decorator}.
 Questa scelta permette di isolare la logica di interazione con Windows in una classe secondaria, migliorando il riuso.
 Ad interagire con il sistema operativo è la classe statica \texttt{NetworkManager}, che consente di configurare il \gls{DNS} di sistema come statico, specificando un indirizzo, oppure di ripristinarlo in modalità dinamica.
-Il decoratore \texttt{StubbornDnsServer} permette di aggiungere le funzionalità di \texttt{NetworkManager} a \texttt{ServerDns}.
+Il decoratore \texttt{StubbornDnsServer} permette di aggiungere le funzionalità di \texttt{NetworkManager} a \texttt{DnsServer}.
 In questo modo è possibile estendere i metodi per avviare e interrompere il server, garantendo, rispettivamente, l'aggiornamento e il ripristino automatico del \gls{DNS} predefinito sul dispositivo.
 L'adozione del pattern \textit{Decorator} risulta particolarmente utile, in quanto consente di isolare l'utilizzo di librerie specifiche per Windows a due sole classi, aprendo la possibilità ad un futuro sviluppo multi-platform.
 
@@ -744,7 +744,7 @@ La directory di ClientShield segue la struttura illustrata in figura \ref{fig:st
 \end{itemize}
 L'installer non è stato sviluppato nella versione prototipale.
 
-\subsection{Tecnologie di supporto}
+\section{Tecnologie di supporto}
 
 \subsection*{NuGet}
 
@@ -774,16 +774,16 @@ Il controllo e la conversione da messaggio generico a specifico sono gestiti dir
 
 La serializzazione e la deserializzazione sono gestite attraverso la libreria Newtonsoft.Json\footnote{Sito ufficiale Newtonsoft.Json: \url{http://www.newtonsoft.com/json}}. Questa libreria è in grado di lavorare assieme a JsonSubTypes per la corretta conversione da classe a JSON e viceversa, offrendo semplicità, ottime prestazioni e individuazione automatica di errori di conversione.
 
-\subsection{Implementazione progetto Service}
+\section{Implementazione progetto Service}
 
 Il progetto per l'implementazione del servizio Windows è stato sviluppato a partire dalla guida \cite{MicrosoftServices2021} realizzata da Microsoft.
 Il servizio è stato sviluppato, come suggerito dalla guida, attraverso un \class{BackgroundService} che, all'avvio, instanzia un \class{ServerNamedPipe} e un \class{ProtectionManager}, adeguatamente introdotti nella sezione \ref{ssec:analisi-protezione} ed illustrati in figura \ref{fig:protezione-facade-pattern}.
 
-\paragraph{ServerNamedPipe} è una classe implementata facendo uso delle librerie di sistema, agisce da server per la comunicazione inter-processo.
+\paragraph{ServerNamedPipe} è una classe implementata facendo uso delle librerie di sistema e funge da server per la comunicazione inter-processo.
 Il server sarà sempre in ascolto sulla pipe di nome "FlashStart-ClientShield-Service-Pipe" finché il servizio Windows è attivo.
 Il costruttore necessita il passaggio di un oggetto \class{ProtectionManager}, col quale il server si interfaccia per eseguire i comandi ricevuti dalla named pipe.
 
-\paragraph{ProtectionManager} è una classe dedita alla gestione generale del servizio di protezione, garantendo il coordinamento tra la gestione delle credenziali, la comunicazione con le API FlashStart e l'esecuzione del server \gls{DNS} locale.
+\paragraph{ProtectionManager} è la classe responsabile della gestione globale del servizio di protezione, coordinando la comunicazione con le API FlashStart, l'esecuzione del server \gls{DNS} locale e la gestione delle credenziali.
 Questa classe funge da punto di raccordo tra le classi che offrono i suddetti servizi:
 \begin{itemize}
 	\itemdef{CredentialManager:} viene utilizzato all'instanziazione di {ProtectionManager} per controllare l'esistenza di un cliente già registrato.
@@ -791,15 +791,74 @@ Questa classe funge da punto di raccordo tra le classi che offrono i suddetti se
 	
 	\itemdef{FlashStartClient:} viene utilizzato durante tutta l'esecuzione del servizio per interfacciarsi con le API di FlashStart.
 	
-	\itemdef{StubbornDnsServer:} classe dedicata alla gestione del server \gls{DNS} locale, viene inizializzato da \class{ProtectionManager} all'avvio della protezione.
+	\itemdef{DnsServer:} classe dedicata alla gestione del server \gls{DNS} locale, viene inizializzato da \class{ProtectionManager} all'avvio della protezione.
 \end{itemize}
 
-\paragraph {CredentialManager} utilizza il gestore di credenziali Windows per la memorizzazione del Client ID, cioè il codice utente univoco necessario per la comunicazione con i server FlashStart.
+\paragraph {CredentialManager} utilizza il gestore di credenziali Windows per l'archiviazione del Client ID, cioè il codice utente univoco necessario per l'autenticazione con i server FlashStart.
 Questa classe è sviluppata come wrapper dell'omonimo modulo appartenente alla libreria Meziantou.Framework.Win32, gestendo automaticamente le configurazioni necessarie per consentire una più facile interazione da parte di \class{ProtectionManager}.
 I metodi esposti consentono in particolare la registrazione, l'eliminazione, l'aggiornamento e la visualizzazione (se presente) del codice utente.\\
 
 \paragraph{FlashStartClient} utilizza un client HTTP fornito dalle librerie di sistema per effettuare richieste ai server FlashStart, impostandone automaticamente l'header di autenticazione.
-Questa classe espone metodi per permettere di effettuare le richieste di \textit{registrazione}, \textit{autorizzazione} e \textit{check}.
+Questa classe fornisce metodi per permettere di effettuare le richieste di \textit{registrazione}, \textit{autorizzazione} e \textit{check}.
+
+\subsection{Implementazione server DNS}
+
+Il server \gls{DNS} rappresenta il cuore del progetto e la sua implementazione è un aspetto cruciale, poiché le future modifiche del software riguarderanno prevalentemente questa parte.  
+È di fondamentale importanza aderire alla struttura proposta in fase di analisi e rendere il codice chiaro ed organizzato, in modo tale da facilitarne la modifiche e, soprattutto, l'estensione.
+L'implementazione descritta di seguito segue le linee guida delineate nella sezione \ref{ssec:analisi-server-dns}, sfruttando i pattern progettuali individuati per ottenere gli obiettivi di manutenibilità, estensibilità ed efficienza.
+
+ClientShield utilizza \class{StubbornDnsServer} come server \gls{DNS}.
+Questa classe funge da decorator per l'implementazione di base \class{DnsServer}, utilizzando il pattern per estendere le funzionalità del server \gls{DNS}, consentendogli di imporsi come predefinito di sistema.
+Per consentire l'operazione, \class{StubbornDnsServer} si avvale dei metodi esposti dalla classe \class{NetworkManager}, responsabile della gestione delle impostazioni di rete.  
+
+\paragraph{NetworkManager} è una classe statica che si occupa della configurazione del \gls{DNS} del dispositivo.
+Interfacciandosi direttamente con le librerie di sistema di Windows, \class{NetworkManager} consente di impostare il \gls{DNS} su uno specifico indirizzo statico e di ripristinarlo alla modalità automatica quando necessario.
+Il codice prodotto sfrutta la libreria \textit{System.Management} per interagire direttamente con il sistema operativo.
+Questa libreria consente di configurare gli indirizzi dei server \gls{DNS} utilizzati per la risoluzione dei domini.
+La soluzione proposta imposta come unico indirizzo valido l'IP 127.0.0.1, dove opera il server gestito da ClientShield.
+
+\paragraph{StubbornDnsServer} estende i metodi \textit{start} e \textit{stop} dell'implementazione di base per gestire correttamente la configurazione del \gls{DNS} di sistema.
+All'avvio del server locale, \class{StubbornDnsServer} utilizza l'evento \textit{NetworkChange}, appartenente alle librerie di sistema, per monitorare ogni cambiamento alle configurazioni di rete, assicurandosi costantemente che il server \gls{DNS} rimanga impostato correttamente.
+All'arresto, la gestione dell'evento viene disattivata e il \gls{DNS} viene ripristinato alla modalità dinamica, garantendo che il sistema torni al suo stato originale.\\
+
+L'implementazione del server \gls{DNS} di base segue uno sviluppo molto modulare sfruttando vari componenti che ne consento la facile estensione e modifica.
+Non solo, lo sviluppo modulare consente di suddividere i compiti da svolgere in routine eseguibili da thread in concorrenza, rendendo la risoluzione dei domini più efficiente.
+Il server necessita di due componenti fondamentali:
+\begin{itemize}
+	\itemdef{DnsResolver:} interfaccia di risoluzione delle richieste \gls{DNS}.
+	\itemdef{SocketListener:} interfaccia di gestione di un socket, consente di attendere richieste su una porta ed eventualmente rispondere.
+\end{itemize}
+Tali componenti, oltre a garantire flessibilità al sistema, contribuiscono anche a mantenere il codice della classe \class{DnsServer} più semplice e, dunque, facile da manutenere.
+
+Al suo avvio il server utilizza la classe \class{TaskFactory}, appartenente alle librerie di sistema, per schedulare l'esecuzione parallela dei task di ascolto e risoluzione delle richieste \gls{DNS}.
+Queste routine sono svolte per un periodo di tempo indefinito, infatti, fintanto che il servizio non riceve una richiesta di stop dal server named pipe o il computer non viene spento, il server deve procedere con la sua esecuzione.
+Per questo motivo entrambi i task sono creati specificando alla \class{TaskFactory} il parametro \textit{LongRunning}, ciò assicura che entrambi abbiano dei thread dedicati, prevenendo l'uso di quelli appartenenti al ThreadPool, riservati ai task di breve durata.
+Per gestire in maniera ottimale la concorrenza causata dai task, il server mantiene una coda di messaggi bloccante.
+La coda consente a \class{SocketListener} e \class{DnsResolver} di cooperare tra loro in modo sicuro, evitando race conditions.
+
+La routine di ascolto delle richieste è completamente affidata alla classe \class{UdpListener}, un'implementazione dell'interfaccia \class{SocketListener} che utilizza il client UDP delle librerie di sistema per monitorare la porta 53, dedicata alle comunicazioni \gls{DNS}.
+Infatti, come riportato in \cite{RFC1035}: ``I messaggi inviati utilizzando UDP usano la porta server 53 (decimale). [...] UDP non è accettabile per i trasferimenti di zona, ma è il metodo raccomandato per le query standard su Internet.''.
+
+Alla ricezione di una richiesta \gls{DNS}, \class{UdpListener} la aggiunge alla coda di messaggi.
+Ciò consente di rendere il thread di ascolto sempre reattivo, in quanto viene scaricato di qualsiasi lavoro di gestione della richiesta, minimizzando i tempi di reazione alla ricezione.
+
+
+La routine di risoluzione del dominio fa uso della classe \class{DoHResolver}, implementazione dell'interfaccia \class{DnsResolver} che utilizza il client HTTP delle librerie di sistema per inviare richieste di risoluzione \gls{DNS} ai server FlashStart.
+La classe si occupa di assicurarsi che venga utilizzata la versione 2 di HTTP, garantendo la crittografia della comunicazione.
+La classe espone un metodo per la risoluzione dei domini: la richiesta viene redirezionata ai server FlashStart fornendo il client ID, che verrà utilizzato per l'applicazione del filtro.
+La risposta ottenuta può contenere l'indirizzo IP corrispondente al dominio richiesto o, in caso di blocco, una stop page indicante il motivo della restrizione.  
+
+La risoluzione del dominio da parte del server prevede tre fasi:
+\begin{enumerate}
+	\item Prima essere affidata al resolver, il nome del dominio viene estrapolato dalla richiesta, permettendo l'eventuale esclusione di domini specifici dal filtro.
+	A tal scopo viene utilizzata la libreria ARSoft.Tools.Net\footnote{Sito ufficiale ARSoft.Tools.Net: \url{https://github.com/alexreinert/ARSoft.Tools.Net}}, che offre efficaci strumenti per una decodificazione veloce di richieste \gls{DNS}.
+	
+	\item Decodificato il dominio, se appartenente alla lista dei domini esclusi dal filtro, la richiesta viene risolta utilizzando un server \gls{DNS} pubblico, altrimenti viene utilizzato \class{DoHResolver} per la risoluzione.
+	
+	\item Una volta ottenuta la risposta dal server \gls{DNS} esterno, viene inviata al processo che aveva richiesto la risoluzione.
+\end{enumerate}
+
+
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

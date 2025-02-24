@@ -77,6 +77,10 @@
 \newcommand{\class}[1]{\texttt{#1}}
 \newcommand{\cs}{C\# }
 
+\usepackage{booktabs} % Per una tabella più professionale
+\usepackage{graphicx} % Per la gestione delle dimensioni della tabella
+\usepackage{xcolor} % Per colorare le righe
+
 \glsdisablehyper
 
 \pagenumbering{roman}
@@ -109,6 +113,7 @@
 \newacronym{MVC}{MVC}{Model-View-Controller}
 \newacronym{WPF}{WPF}{Windows Presentation Foundation}
 \newacronym{IDE}{IDE}{ambiente di sviluppo integrato}
+\newacronym{WSL}{WSL}{Windows Sub-system fo Linux}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -920,6 +925,55 @@ Sono rappresentate le schermate di gestione della protezione (disabilitazione/ab
 	\caption{Interfaccia utente ClientShield}
 	\label{fig:schermate-app}
 \end{figure}
+
+
+\section{Validazione}
+
+Al termine dello sviluppo, il servizio Windows è stato installato tramite PowerShell per consentire il testing manuale di tutte le funzionalità disponibili.
+I test si sono concentrati principalmente sulla verifica del corretto funzionamento del servizio di filtraggio, assicurandone la conformità ai requisiti funzionali.
+Tuttavia, una volta appurato il corretto funzionamento del prototipo, sono stati prodotti dei dati quantitativi sull'efficienza del filtro.
+
+Per lo svolgimento dei test è stato utilizzato il sistema \gls{WSL}, che ha permesso di eseguire script Bash in ambiente Windows.
+I test sono stati eseguiti su un computer con CPU Intel(R) Core(TM) i5-10210U CPU da 1.60GHz e 8GB di memoria RAM, connesso ad internet tramite cavo ethernet.
+
+La raccolta dei dati è stata effettuata mediante uno script bash che esegue il comando \texttt{dig} per visualizzare i tempi di risposta del \gls{DNS} di sistema sui primi mille domini appartenenti ad una lista online\footnote{Lista di domini: \url{https://github.com/fgont/domain-list/blob/master/majestic-domains.txt}}.
+Lo script calcola il tempo di risposta medio, minimo e massimo, fornendo informazioni anche sul numero di query perse.
+Lo script è stato eseguito dapprima settando il \gls{DNS} statico sull'indirizzo 1.1.1.1, cioè il server \gls{DNS} pubblico di CloudFlare\footnote{Sito ufficiale ClouFlare: \url{https://www.cloudflare.com}}, e successivamente attivando la protezione tramite ClientShield.
+In ognuno dei due scenari sono stati attivati cinque diversi processi in background che hanno eseguito lo script e trascritto i risultati su dei file di log.
+I risultati dei test sono riportati nella tabella \ref{tab:dns-tests}.
+
+\begin{table}[h]
+	\centering
+	\renewcommand{\arraystretch}{1.3} % Spaziatura tra le righe
+	\setlength{\tabcolsep}{10pt} % Spaziatura tra le colonne
+	\begin{tabular}{lcccc}
+		\toprule
+		\textbf{Test} & \textbf{T.Medio (ms)} & \textbf{T.Min (ms)} & \textbf{T.Max (ms)} & \textbf{Query Perse} \\
+		\midrule
+		\multicolumn{5}{c}{\textbf{DNS Statico: Cloudflare (1.1.1.1)}} \\
+		\midrule
+		Test 1 & 67 & 0 & 3999 & 8 \\
+		Test 2 & 62 & 0 & 1052 & 8 \\
+		Test 3 & 70 & 0 & 2009 & 8 \\
+		Test 4 & 65 & 0 & 2888 & 8 \\
+		Test 5 & 69 & 0 & 3991 & 8 \\
+		\midrule
+		\multicolumn{5}{c}{\textbf{DNS con ClientShield Attivato}} \\
+		\midrule
+		Test 1 & 65 & 19 & 1630 & 8 \\
+		Test 2 & 65 & 10 & 1630 & 8 \\
+		Test 3 & 65 & 20 & 1620 & 8 \\
+		Test 4 & 65 & 20 & 1620 & 8 \\
+		Test 5 & 66 & 20 & 1639 & 8 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Risultati dei test sul tempo di risposta DNS con e senza ClientShield}
+	\label{tab:dns-tests}
+\end{table}
+I test presentano alcune limitazioni, poiché sono stati eseguiti su un numero limitato di iterazioni e su un'unica macchina.
+Tuttavia sono ritenuti sufficienti a verificare il buon funzionamento del prototipo, che fornisce risposte in tempi, in media, simili ad uno dei \gls{DNS} più utilizzati al mondo.
+I tempi di risposta pari a 0ms registrati nei test con il \gls{DNS} di CloudFlare sono dovuti all'utilizzo della cache, una funzionalità non implementata nel prototipo di ClientShield.  
+La differenza tra i tempi massimi di risposta è invece dovuta, presumibilmente, a diverse configurazioni tra il \gls{DNS} pubblico e quello realizzato in questa tesi.
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

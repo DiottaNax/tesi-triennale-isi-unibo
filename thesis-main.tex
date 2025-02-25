@@ -846,7 +846,7 @@ La routine di ascolto delle richieste è completamente affidata alla classe \cla
 Infatti, come riportato in \cite{RFC1035}: ``I messaggi inviati utilizzando UDP usano la porta server 53 (decimale). [...] UDP non è accettabile per i trasferimenti di zona, ma è il metodo raccomandato per le query standard su Internet.''.
 
 Alla ricezione di una richiesta \gls{DNS}, \class{UdpListener} la aggiunge alla coda di messaggi.
-Ciò consente di rendere il thread di ascolto sempre reattivo, in quanto viene scaricato di qualsiasi lavoro di gestione della richiesta, minimizzando i tempi di reazione alla ricezione.
+Ciò consente di rendere il thread di ascolto sempre reattivo, in quanto scaricato di qualsiasi lavoro di gestione della richiesta, minimizzando i tempi di reazione alla ricezione.
 
 
 La routine di risoluzione del dominio fa uso della classe \class{DoHResolver}, implementazione dell'interfaccia \class{DnsResolver} che utilizza il client HTTP delle librerie di sistema per inviare richieste di risoluzione \gls{DNS} ai server FlashStart.
@@ -975,11 +975,24 @@ Tuttavia sono ritenuti sufficienti a verificare il buon funzionamento del protot
 I tempi di risposta pari a 0ms registrati nei test con il \gls{DNS} di CloudFlare sono dovuti all'utilizzo della cache, una funzionalità non implementata nel prototipo di ClientShield.  
 La differenza tra i tempi massimi di risposta è invece dovuta, presumibilmente, a diverse configurazioni tra il \gls{DNS} pubblico e quello realizzato in questa tesi.
 
+\chapter{Conclusioni e sviluppi futuri}
+
+L'implementazione del software ClientShield proposta in questa tesi realizza una completa revisione del suo predecessore.
+Il lavoro sviluppato in questa tesi realizza uno sviluppo alternativo, che non si limita al semplice passaggio di tecnologia da \gls{VPN} a \gls{DoH} o alla soddisfazione dei requisiti richiesti dall'azienda.
+Il sistema sviluppato propone una visione a lungo termine del progetto, mirando ad adempire ai requisiti garantendo sempre la possibilità di estendere facilmente il progetto.
+
+I pattern proposti si sono rivelati fondamentali, permettendo una corretta separazione dei concetti del dominio e proponendo una struttura altamente modulare e organizzata.
+Ciò consente una semplice manutenzione del progetto e permette di estendere il software con minimi interventi mirati, incontrando perfettamente le necessità aziendali.
+Infatti, sebbene il lavoro svolto abbia prodotto risultati positivi, è necessario ricordare che la tesi tratta un'implementazione prototipale, che dovrà necessariamente essere oggetto di revisione da parte di FlashStart per un effettivo impiego business.
+
+La realizzazione del progetto ha inoltre permesso di esplorare una soluzione di filtraggio alternativa, che sfrutta un server \gls{DNS} locale piuttosto che una scheda di rete virtuale per il filtraggio.
+Ciò ha dimostrato
+
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\backmatter\
+\backmatter
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}

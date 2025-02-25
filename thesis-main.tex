@@ -958,16 +958,24 @@ I risultati dei test sono riportati nella tabella \ref{tab:dns-tests}.
 		Test 4 & 65 & 0 & 2888 & 8 \\
 		Test 5 & 69 & 0 & 3991 & 8 \\
 		\midrule
-		\multicolumn{5}{c}{\textbf{DNS con ClientShield Attivato}} \\
+		\multicolumn{5}{c}{\textbf{DNS con ClientShield DoH Attivato}} \\
 		\midrule
 		Test 1 & 65 & 19 & 1630 & 8 \\
 		Test 2 & 65 & 10 & 1630 & 8 \\
 		Test 3 & 65 & 20 & 1620 & 8 \\
 		Test 4 & 65 & 20 & 1620 & 8 \\
 		Test 5 & 66 & 20 & 1639 & 8 \\
+		\midrule
+		\multicolumn{5}{c}{\textbf{DNS con ClientShield VPN Attivato}} \\
+		\midrule
+		Test 1 & 98 & 9 & 1647 & 8 \\
+		Test 2 & 102 & 9 & 1922 & 8 \\
+		Test 3 & 102 & 18 & 1922 & 8 \\
+		Test 4 & 102 & 9 & 1922 & 8 \\
+		Test 5 & 102 & 9 & 1932 & 8 \\
 		\bottomrule
 	\end{tabular}
-	\caption{Risultati dei test sul tempo di risposta DNS con e senza ClientShield}
+	\caption{Risultati dei test sul tempo di risposta DNS}
 	\label{tab:dns-tests}
 \end{table}
 I test presentano alcune limitazioni, poiché sono stati eseguiti su un numero limitato di iterazioni e su un'unica macchina.

@@ -94,7 +94,7 @@
 \date{\today}
 \subject{Programmazione ad Oggetti}
 \supervisor{Prof.\ Viroli Mirko}
-%\cosupervisor{Nicolas Farabegoli}
+\cosupervisor{Dott.\ Nicolas Farabegoli}
 \session{IV}
 \academicyear{2023\ -\ 2024}
 
@@ -113,7 +113,7 @@
 \newacronym{MVC}{MVC}{Model-View-Controller}
 \newacronym{WPF}{WPF}{Windows Presentation Foundation}
 \newacronym{IDE}{IDE}{ambiente di sviluppo integrato}
-\newacronym{WSL}{WSL}{Windows Sub-system fo Linux}
+\newacronym{WSL}{WSL}{Windows Sub-system for Linux}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
@@ -724,7 +724,7 @@ Questa fase è stata indubbiamente resa più veloce e diretta grazie all'attento
 \section{Scelta del linguaggio}
 
 Il linguaggio scelto per lo sviluppo di ClientShield è stato \cs con .NET 8.
-Questa scelta è stata piuttosto naturale, sia perché è lo stesso linguaggio utilizzato dalla precedente implementazione di FlashStart, ma soprattutto grazie alle caratteristiche del linguaggio, che si adeguano perfettamente ai requisiti del software.
+Questa scelta è stata piuttosto naturale, sia perché è lo stesso linguaggio utilizzato dalla precedente implementazione sviluppata da FlashStart, ma soprattutto grazie alle caratteristiche del linguaggio, che si adeguano perfettamente ai requisiti del software.
 Innanzitutto \cs è un linguaggio moderno, che consente uno sviluppo ed una manutenzione più semplici, grazie alla sua sintassi chiara e funzionalità avanzate.
 L'utilizzo di questo linguaggio garantisce un ottimo equilibrio tra efficienza e semplicità, garantendo una gestione automatica della memoria tramite la garbage collection\footnote{La \textbf{garbage collection} identifica e recupera automaticamente la memoria occupata da oggetti non più utilizzati, evitando che il programma esaurisca lo spazio disponibile.} ed una vasta disponibilità di librerie e framework che facilitano lo sviluppo.
 
@@ -746,7 +746,7 @@ La directory di ClientShield segue la struttura illustrata in figura \ref{fig:st
 	è un progetto di tipo \gls{WPF}, adatto allo sviluppo di una moderna interfaccia grafica per sistemi Desktop.
 	
 	\item \textbf{Common:}
-	questo progetto contiene i messaggi e le configurazioni della comunicazione inter-processo, utilizzabili sia da Service, che da Client.
+	questo progetto contiene i messaggi e le configurazioni della comunicazione inter-processo, utilizzabili sia da Service che da Client.
 \end{itemize}
 L'installer non è stato sviluppato nella versione prototipale.
 
@@ -783,7 +783,7 @@ La serializzazione e la deserializzazione sono gestite attraverso la libreria Ne
 \section{Implementazione progetto Service}
 
 Il progetto per l'implementazione del servizio Windows è stato sviluppato a partire dalla guida \cite{MicrosoftServices2021} realizzata da Microsoft.
-Il servizio è stato sviluppato, come suggerito dalla guida, attraverso un \class{BackgroundService} che, all'avvio, instanzia un \class{ServerNamedPipe} e un \class{ProtectionManager}, adeguatamente introdotti nella sezione \ref{ssec:analisi-protezione} ed illustrati in figura \ref{fig:protezione-facade-pattern}.
+Il servizio è stato implementato, come suggerito dalla guida, attraverso un \class{BackgroundService} che, all'avvio, instanzia un \class{ServerNamedPipe} e un \class{ProtectionManager}, adeguatamente introdotti nella sezione \ref{ssec:analisi-protezione} ed illustrati in figura \ref{fig:protezione-facade-pattern}.
 
 \paragraph{ServerNamedPipe} è una classe implementata facendo uso delle librerie di sistema e funge da server per la comunicazione inter-processo.
 Il server sarà sempre in ascolto sulla pipe di nome "FlashStart-ClientShield-Service-Pipe" finché il servizio Windows è attivo.
@@ -802,7 +802,7 @@ Questa classe funge da punto di raccordo tra le classi che offrono i suddetti se
 
 \paragraph {CredentialManager} utilizza il gestore di credenziali Windows per l'archiviazione del Client ID, cioè il codice utente univoco necessario per l'autenticazione con i server FlashStart.
 Questa classe è sviluppata come wrapper dell'omonimo modulo appartenente alla libreria Meziantou.Framework.Win32, gestendo automaticamente le configurazioni necessarie per consentire una più facile interazione da parte di \class{ProtectionManager}.
-I metodi esposti consentono in particolare la registrazione, l'eliminazione, l'aggiornamento e la visualizzazione (se presente) del codice utente.\\
+I metodi esposti consentono in particolare la registrazione, l'eliminazione, l'aggiornamento e la visualizzazione (se presente) del codice utente sul dispositivo.\\
 
 \paragraph{FlashStartClient} utilizza un client HTTP fornito dalle librerie di sistema per effettuare richieste ai server FlashStart, impostandone automaticamente l'header di autenticazione.
 Questa classe fornisce metodi per permettere di effettuare le richieste di \textit{registrazione}, \textit{autorizzazione} e \textit{check}.
@@ -824,10 +824,10 @@ Questa libreria consente di configurare gli indirizzi dei server \gls{DNS} utili
 La soluzione proposta imposta come unico indirizzo valido l'IP 127.0.0.1, dove opera il server gestito da ClientShield.
 
 \paragraph{StubbornDnsServer} estende i metodi \textit{start} e \textit{stop} dell'implementazione di base per gestire correttamente la configurazione del \gls{DNS} di sistema.
-All'avvio del server locale, \class{StubbornDnsServer} utilizza l'evento \textit{NetworkChange}, appartenente alle librerie di sistema, per monitorare ogni cambiamento alle configurazioni di rete, assicurandosi costantemente che il server \gls{DNS} rimanga impostato correttamente.
+All'avvio del server locale, \class{StubbornDnsServer} utilizza l'evento \textit{NetworkChange}, appartenente alle librerie di sistema, per monitorare ogni cambiamento alle configurazioni di rete e assicurarsi costantemente che il server \gls{DNS} rimanga impostato correttamente.
 All'arresto, la gestione dell'evento viene disattivata e il \gls{DNS} viene ripristinato alla modalità dinamica, garantendo che il sistema torni al suo stato originale.\\
 
-L'implementazione del server \gls{DNS} di base segue uno sviluppo molto modulare sfruttando varie componenti che ne consentono la facile estensione e modifica.
+L'implementazione del server \gls{DNS} di base segue uno sviluppo molto modulare, sfruttando varie componenti che ne consentono la facile estensione e modifica.
 Non solo, lo sviluppo modulare consente di suddividere i compiti da svolgere in routine eseguibili da thread in concorrenza, rendendo la risoluzione dei domini più efficiente.
 Il server necessita di due componenti fondamentali:
 \begin{itemize}
@@ -838,7 +838,7 @@ Tali componenti, oltre a garantire flessibilità al sistema, contribuiscono anch
 
 Al suo avvio il server utilizza la classe \class{TaskFactory}, appartenente alle librerie di sistema, per schedulare l'esecuzione parallela dei task di ascolto e risoluzione delle richieste \gls{DNS}.
 Queste routine sono svolte per un periodo di tempo indefinito, infatti, fintanto che il servizio non riceve una richiesta di stop dal server named pipe o il computer non viene spento, il server deve procedere con la sua esecuzione.
-Per questo motivo entrambi i task sono creati specificando alla \class{TaskFactory} il parametro \textit{LongRunning}, ciò assicura che entrambi abbiano dei thread dedicati, prevenendo l'uso di quelli appartenenti al ThreadPool, riservati ai task di breve durata.
+Per questo motivo entrambi i task sono creati specificando alla \class{TaskFactory} il parametro \textit{LongRunning}, ciò assicura che abbiano ambedue dei thread dedicati, prevenendo l'uso di quelli appartenenti al ThreadPool, riservati ai task di breve durata.
 Per gestire in maniera ottimale la concorrenza causata dai task, il server mantiene una coda di messaggi bloccante.
 La coda consente a \class{SocketListener} e \class{DnsResolver} di cooperare tra loro in modo sicuro, evitando race conditions.
 
@@ -849,14 +849,14 @@ Alla ricezione di una richiesta \gls{DNS}, \class{UdpListener} la aggiunge alla 
 Ciò consente di rendere il thread di ascolto sempre reattivo, in quanto scaricato di qualsiasi lavoro di gestione della richiesta, minimizzando i tempi di reazione alla ricezione.
 
 
-La routine di risoluzione del dominio fa uso della classe \class{DoHResolver}, implementazione dell'interfaccia \class{DnsResolver} che utilizza il client HTTP delle librerie di sistema per inviare richieste di risoluzione \gls{DNS} ai server FlashStart.
+La routine di risoluzione del dominio fa uso della classe \class{DoHResolver}, cioè un'implementazione dell'interfaccia \class{DnsResolver} che utilizza il client HTTP delle librerie di sistema per inviare richieste di risoluzione \gls{DNS} ai server FlashStart.
 La classe si occupa di assicurarsi che venga utilizzata la versione 2 di HTTP, garantendo la crittografia della comunicazione.
 La classe espone un metodo per la risoluzione dei domini: la richiesta viene redirezionata ai server FlashStart fornendo il client ID, che verrà utilizzato per l'applicazione del filtro.
 La risposta ottenuta può contenere l'indirizzo IP corrispondente al dominio richiesto o, in caso di blocco, una stop page indicante il motivo della restrizione.  
 
 La risoluzione del dominio da parte del server prevede tre fasi:
 \begin{enumerate}
-	\item Prima essere affidata al resolver, il nome del dominio viene estrapolato dalla richiesta, permettendo l'eventuale esclusione di domini specifici dal filtro.
+	\item Prima di essere affidata al resolver, il nome del dominio viene estrapolato dalla richiesta, permettendo l'eventuale esclusione di domini specifici dal filtro.
 	A tal scopo viene utilizzata la libreria ARSoft.Tools.Net\footnote{Sito ufficiale ARSoft.Tools.Net: \url{https://github.com/alexreinert/ARSoft.Tools.Net}}, che offre efficaci strumenti per una decodificazione veloce di richieste \gls{DNS}.
 	
 	\item Decodificato il dominio, se appartenente alla lista dei domini esclusi dal filtro, la richiesta viene risolta utilizzando un server \gls{DNS} pubblico, altrimenti viene utilizzato \class{DoHResolver} per la risoluzione.
@@ -868,7 +868,7 @@ Infine, all'arresto, il server si occupa di interrompere correttamente l'esecuzi
 \section{Implementazione progetto Client}
 
 Sebbene si sia discusso del possibile sviluppo di un'interfaccia grafica multi-piattaforma, il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
-La scelta è stata motivata principalmente dalla maggiore familiarità con la libreria, che offre un'ottima integrazione con .NET.
+La scelta è motivata principalmente dalla maggiore familiarità con la libreria, che offre un'ottima integrazione con .NET.
 Tuttavia, è doveroso sottolineare che il progetto segue l'architettura software analizzata in sezione \ref{ssec:analisi-mvp}.
 Pertanto le modifiche necessarie per un eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
 Inoltre è opportuno sottolineare che, grazie ad una corretta aderenza al pattern \gls{MVP}, tali modifiche sono da considerarsi semplici e di impatto minore, in quanto la totale passività della parte visiva ha concesso di spostare l'intera logica all'interno delle classi \class{Presenter}.
@@ -888,7 +888,7 @@ L'applicazione è strutturata su tre schermate principali e segue la logica illu
 	Deve essere visualizzabile quando non esiste già un utente FlashStart sul dispositivo e permettere l'inserimento dei campi riguardanti la chiave di profilo e il nome del dispositivo.
 	
 	\itemdef{Schermata di abilitazione della protezione:} è una semplice schermata visualizzabile quando il dispositivo ha già un utente FlashStart registrato, ma la protezione è disattivata.
-	Nell'implementazione prototipale dovrà contenere due bottoni: uno per l'attivazione della protezione, l'altro per cancellare l'utente dal dispositivo, riportando necessariamente l'applicazione alla schermata di registrazione.
+	Nell'implementazione prototipale contiene due bottoni: uno per l'attivazione della protezione, l'altro per cancellare l'utente dal dispositivo, riportando necessariamente l'applicazione alla schermata di registrazione.
 	
 	\itemdef{Schermata di disabilitazione della protezione:} è una schermata visualizzabile quando il dispositivo ha già un utente FlashStart registrato e la protezione è attiva.
 	La schermata deve presentare un campo per l'inserimento del PIN di disabilitazione (visualizzabile dalla piattaforma cloud) ed un bottone per eseguire la richiesta di disabilitazione.
@@ -938,9 +938,9 @@ I test sono stati eseguiti su un computer con CPU Intel(R) Core(TM) i5-10210U CP
 
 La raccolta dei dati è stata effettuata mediante uno script bash che esegue il comando \texttt{dig} per visualizzare i tempi di risposta del \gls{DNS} di sistema sui primi mille domini appartenenti ad una lista online\footnote{Lista di domini: \url{https://github.com/fgont/domain-list/blob/master/majestic-domains.txt}}.
 Lo script calcola il tempo di risposta medio, minimo e massimo, fornendo informazioni anche sul numero di query perse.
-Lo script è stato eseguito dapprima settando il \gls{DNS} statico sull'indirizzo 1.1.1.1, cioè il server \gls{DNS} pubblico di CloudFlare\footnote{Sito ufficiale ClouFlare: \url{https://www.cloudflare.com}}, e successivamente attivando la protezione tramite ClientShield.
-In ognuno dei due scenari sono stati attivati cinque diversi processi in background che hanno eseguito lo script e trascritto i risultati su dei file di log.
-I risultati dei test sono riportati nella tabella \ref{tab:dns-tests}.
+Lo script è stato eseguito inizialmente configurando il DNS statico sull’indirizzo 1.1.1.1, il server pubblico di Cloudflare\footnote{Sito ufficiale Cloudflare: \url{https://www.cloudflare.com}}. Successivamente, è stata attivata la protezione tramite ClientShield, testando sia la nuova implementazione basata su \gls{DoH} sia la versione precedente, che utilizza una \gls{VPN}.
+In ognuno dei tre scenari sono stati attivati cinque diversi processi in background che hanno eseguito lo script e trascritto i risultati su dei file di log.
+I dati finali dei test sono riportati nella tabella \ref{tab:dns-tests}.
 
 \begin{table}[h]
 	\centering
@@ -978,23 +978,29 @@ I risultati dei test sono riportati nella tabella \ref{tab:dns-tests}.
 	\caption{Risultati dei test sul tempo di risposta DNS}
 	\label{tab:dns-tests}
 \end{table}
-I test presentano alcune limitazioni, poiché sono stati eseguiti su un numero limitato di iterazioni e su un'unica macchina.
-Tuttavia sono ritenuti sufficienti a verificare il buon funzionamento del prototipo, che fornisce risposte in tempi, in media, simili ad uno dei \gls{DNS} più utilizzati al mondo.
-I tempi di risposta pari a 0ms registrati nei test con il \gls{DNS} di CloudFlare sono dovuti all'utilizzo della cache, una funzionalità non implementata nel prototipo di ClientShield.  
+Questi test presentano alcune limitazioni, poiché sono stati eseguiti su un numero limitato di iterazioni e su un'unica macchina.
+Tuttavia sono ritenuti sufficienti a verificare il buon funzionamento del prototipo, che fornisce risposte in tempi, in media, simili ad uno dei \gls{DNS} più utilizzati al mondo e sempre minori rispetto alla precedente implementazione.
+I tempi di risposta pari a 0ms registrati nei test con il \gls{DNS} di CloudFlare sono probabilmente dovuti all'utilizzo della cache, una funzionalità non implementata nel prototipo di ClientShield.
 La differenza tra i tempi massimi di risposta è invece dovuta, presumibilmente, a diverse configurazioni tra il \gls{DNS} pubblico e quello realizzato in questa tesi.
 
 \chapter{Conclusioni e sviluppi futuri}
 
-L'implementazione del software ClientShield proposta in questa tesi realizza una completa revisione del suo predecessore.
+L'implementazione del software ClientShield proposta in questa tesi vede una completa revisione del suo predecessore.
 Il lavoro sviluppato in questa tesi realizza uno sviluppo alternativo, che non si limita al semplice passaggio di tecnologia da \gls{VPN} a \gls{DoH} o alla soddisfazione dei requisiti richiesti dall'azienda.
-Il sistema sviluppato propone una visione a lungo termine del progetto, mirando ad adempire ai requisiti garantendo sempre la possibilità di estendere facilmente il progetto.
+Il sistema sviluppato adotta una visione a lungo termine, non solo soddisfacendo i requisiti richiesti, ma garantendo anche un'architettura facilmente estendibile per futuri sviluppi.
 
 I pattern proposti si sono rivelati fondamentali, permettendo una corretta separazione dei concetti del dominio e proponendo una struttura altamente modulare e organizzata.
 Ciò consente una semplice manutenzione del progetto e permette di estendere il software con minimi interventi mirati, incontrando perfettamente le necessità aziendali.
-Infatti, sebbene il lavoro svolto abbia prodotto risultati positivi, è necessario ricordare che la tesi tratta un'implementazione prototipale, che dovrà necessariamente essere oggetto di revisione da parte di FlashStart per un effettivo impiego business.
+Infatti, sebbene il lavoro svolto abbia prodotto risultati positivi, è necessario ricordare che la tesi tratta un'implementazione prototipale, che dovrà necessariamente essere oggetto di revisione da parte di FlashStart per un effettivo impiego in ambiente business.
 
-La realizzazione del progetto ha inoltre permesso di esplorare una soluzione di filtraggio alternativa, che sfrutta un server \gls{DNS} locale piuttosto che una scheda di rete virtuale per il filtraggio.
-Ciò ha dimostrato
+La realizzazione del progetto ha inoltre permesso di esplorare una soluzione di filtraggio alternativa, che sfrutta un server \gls{DNS} locale piuttosto che una scheda di rete virtuale.
+Ciò ha dimostrato non soltanto il funzionamento della soluzione, ma anche la sua potenziale efficienza, che, nei test effettuati, supera la precedente implementazione.
+
+Per quanto riguarda gli sviluppi futuri, ClientShield dovrà sicuramente essere esteso aggiungendo le funzionalità mirate all'implementazione business e non riguardanti il sistema prototipale.
+Un aspetto fondamentale per il futuro sviluppo sarà la revisione della gestione degli errori, introducendo funzionalità avanzate di logging, attualmente non approfondite nell'implementazione prototipale.  
+Sarebbe interessante inoltre aggiungere funzionalità di caching, che permetterebbero al sistema dei tempi di risposta nettamente minori quando, ad esempio, si navigano più pagine di uno stesso sito.
+Infine, un ultimo aspetto rilevante sarebbe la valutazione di un'effettiva implementazione multi-platform, che estenderebbe il funzionamento del progetto anche ad altri sistemi operativi, ampliandone le potenzialità.  
+
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY

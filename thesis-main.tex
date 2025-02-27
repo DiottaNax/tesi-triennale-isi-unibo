@@ -113,32 +113,35 @@
 \newacronym{MVC}{MVC}{Model-View-Controller}
 \newacronym{WPF}{WPF}{Windows Presentation Foundation}
 \newacronym{IDE}{IDE}{ambiente di sviluppo integrato}
-\newacronym{WSL}{WSL}{Windows Sub-system for Linux}
+\newacronym{WSL}{WSL}{Windows Subsystem for Linux}
 
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
 
 \begin{document}
 
-\frontmatter\frontispiece\
+\frontmatter
+\frontispiece
 
 \renewcommand{\abstractname}{Sommario}
 \begin{abstract}
 
-Lo sviluppo della tecnologia cresce sempre più velocemente e, con essa, anche i rischi che gli utenti corrono semplicemente navigando in rete.
-Questa tesi si inserisce nell'ambito dell'internet filtering, cioè la possibilità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
+Lo sviluppo della tecnologia cresce sempre più velocemente: il costante incremento della potenza computazionale e l'avvento dell'intelligenza artificiale hanno consentito lo sviluppo di malware sempre più sofisticati, aumentando i rischi che gli utenti corrono semplicemente navigando sul web.
+Questa tesi si inserisce nell'ambito della sicurezza in rete, trattando di internet filtering, cioè la possibilità di filtrare il traffico in rete negando l'accesso a siti potenzialmente pericolosi.
 
 L'obiettivo di questo progetto è lo sviluppo di un software che sia facilmente installabile su un dispositivo Windows e filtri tutte le richieste web effettuate.
-Si vuole offrire la possibilità ad un un amministratore di rete di attivare e disattivare la protezione del dispositivo da remoto, decidendo eventualmente anche quali categorie di siti bloccare.
+Si vuole offrire la possibilità ad un amministratore di rete di attivare e disattivare la protezione del dispositivo da remoto, decidendo eventualmente anche quali categorie di siti bloccare.
 
-Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il filtraggio \gls{DNS}.
-
+Per lo sviluppo è stata fondamentale la collaborazione con FlashStart, azienda di riferimento nel mercato italiano per quanto riguarda il filtraggio DNS.
 Il software è stato sviluppato in contesto aziendale come prototipo e sfrutta ampiamente le soluzioni di filtraggio aziendali.
-Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio \gls{DNS}, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
+Ciò ha facilitato la gestione delle categorie e dell'effettivo filtraggio DNS, permettendo al progetto di focalizzarsi sulla cattura e redirezione del traffico internet del dispositivo verso i server gestiti da FlashStart.
 \end{abstract}
 
 \begin{dedication}
-Optional dedication.
+Ai miei fratelli e alle mie sorelle,\\
+nella speranza che sempre assieme\\
+affronteremo le difficoltà\\
+e festeggeremo i nostri successi.
 \end{dedication}
 
 %----------------------------------------------------------------------------------------
@@ -174,7 +177,7 @@ I nuovi modelli di Machine Learning sono capaci di analizzare e identificare con
 grazie anche ai giganteschi volumi di dati di cui dispongono.
 Questi sistemi riescono a riconoscere tecniche di phishing e malware avanzate, anche quando progettate per eludere i metodi di rilevamento tradizionali.
 
-Questa tesi si colloca in questo contesto e si propone l'obiettivo di sviluppare un software prototipale per il filtraggio internet sul computer di installazione.
+Questa tesi si colloca in questo contesto e si pone l'obiettivo di sviluppare un software prototipale per il filtraggio internet sul computer di installazione.
 Il lavoro illustrerà dettagliatamente tutte le fasi di analisi, progettazione e sviluppo del progetto.
 
 Data la necessità di interazione con componenti specifici del sistema operativo,
@@ -188,17 +191,17 @@ La tesi si articola in 4 capitoli principali, che descrivono le diverse fasi del
 
 \begin{itemize}
 
-    \item \textbf{Capitolo 1 (Contesto)}: in questo capitolo si tratta in maniera approfondita il problema affrontato dalla tesi.
+    \itemdef{Capitolo 1 (Contesto)}: in questo capitolo si tratta in maniera approfondita il problema affrontato dalla tesi.
     Viene analizzato il software attualmente presente in FlashStart e le motivazioni che inducono alla necessità di un nuovo sviluppo.
     
-    \item \textbf{Capitolo 2 (Requisiti)}: in questo capitolo vengono affrontati casi d'uso e requisiti, analizzando il funzionamento e la percezione del progetto dal punto di vista dell'utente.
+    \itemdef{Capitolo 2 (Requisiti)}: in questo capitolo vengono affrontati casi d'uso e requisiti, analizzando il funzionamento e la percezione del progetto dal punto di vista dell'utente.
     
-    \item \textbf{Capitolo 3 (Tecnologie)}:
-    in questo capitolo vengono riportate le diverse tecnologie utilizzate e le scelte che hanno portato al loro impiego nel progetto.
-    
-    \item \textbf{Capitolo 4 (Analisi e progettazione)}:
+    \itemdef{Capitolo 3 (Analisi e progettazione)}:
     in questo capitolo viene descritta la fase di analisi e progettazione del sistema,
     illustrandone in particolare l'architettura e i pattern utilizzati, evidenziando in che modo il software ne tragga guadagno.
+    
+    \itemdef{Capitolo 4 (Implementazione)}:
+    in questo capitolo viene descritta l'intera fase di sviluppo, riportando linguaggi, librerie e tecnologie utilizzate per l'implementazione del software.
 
 \end{itemize}
 
@@ -220,7 +223,7 @@ Tramite questa pratica è infatti possibile effettuare controlli sul contenuto d
 Risulta evidente fin da subito che, per garantire un filtraggio di contenuti preciso ed efficace, sia necessaria un'attenta analisi delle pagine web, evitando di correre il rischio di impedirne immotivatamente l'accesso.
 
 Questa tesi è svolta come progetto in collaborazione con FlashStart, leader italiana per quanto riguarda il filtraggio \gls{DNS}.
-Un server \gls{DNS} è un sistema che permette di tradurre nomi di domini leggibili da un uomo, in indirizzi interpretabili da dei computer per connettersi tra loro.
+Un server \gls{DNS} è un sistema che permette di tradurre nomi di domini leggibili da un umano, in indirizzi interpretabili da dei computer per connettersi tra loro.
 Il filtraggio si basa proprio su questo principio: quando si accede ad un sito web attraverso un browser qualsiasi, il computer interrogherà un server \gls{DNS} per ottenere l'indirizzo attraverso cui sia possibile accedere al sito.
 Con un'apposita configurazione, si può indurre il \gls{DNS} a bloccare la risoluzione di pagine web malevoli o riportanti contenuti non graditi.
 FlashStart offre un servizio \gls{DNS} configurabile, attraverso cui è possibile definire delle categorie di contenuti da bloccare.
@@ -245,7 +248,7 @@ Il filtraggio \gls{DNS} può essere implementato in diverse modalità, di seguit
 \end{itemize}
 
 FlashStart offre prodotti per tutte le suddette modalità, tuttavia questo progetto prende in esame soltanto la terza tipologia di protezione \gls{DNS}, ossia il filtraggio a livello di endpoint.
-Nel periodo tra il 2019 e il 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro remoto.
+Nel periodo tra il 2019 e il 2021 le aziende italiane, così come quelle di tutto il mondo, hanno dovuto affrontare la necessità dell'impiego del lavoro da remoto.
 Se da una parte tale pratica rappresenta un'opportunità per i lavoratori, che ne guadagnano in flessibilità, dall'altra espone l'azienda a nuovi rischi.
 A dimostrazione di ciò, proprio nel 2020 è stato emanato dall'\gls{AGID} il vademecum \cite{AgID2020}, cioè una serie di undici raccomandazioni che offrono linee guida per garantire la sicurezza del lavoro da remoto.
 
@@ -344,7 +347,7 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 	ClientShield ricorderà le credenziali attive prima dello spegnimento, riattivando automaticamente la protezione all'accensione con le stesse.
 	
 \end{itemize}
-Queste funzionalità costituiscono il complessivo comportamento del prototipo sviluppato in questo progetto.
+Queste funzionalità costituiscono il comportamento complessivo del prototipo sviluppato in questo progetto.
 L'obiettivo essenziale è dunque garantire la protezione del dispositivo, fungendo da intermediario tra l'endpoint e i server di FlashStart.
 Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il diagramma in figura \ref{fig:interazione-utente-software-server}.
 
@@ -403,7 +406,7 @@ L'automatizzazione completa del processo di installazione consente agli amminist
 \subsection*{Efficienza}
 
 Anche nello sviluppo prototipale, ClientShield dovrebbe garantire un'efficienza tale da risultare totalmente trasparente all'utente.
-L'obiettivo è limitare qualsiasi impatto sulla navigazione, un utente qualsiasi del dispositivo dovrebbe potersi scordare della presenza di un filtro.
+L'obiettivo è limitare qualsiasi impatto sulla navigazione, un utente qualunque del dispositivo dovrebbe potersi scordare della presenza di un filtro.
 Ciò implica una rapida gestione delle richieste \gls{DNS}, consentendo una veloce risoluzione dei domini, limitando di conseguenza i tempi di caricamento delle pagine web.
 
 Questo requisito è favorito dall'abbandono dell'utilizzo di una \gls{VPN} in favore del protocollo \gls{DoH} e dalla velocità generale dei server di FlashStart, che, a febbraio 2025, risulta essere il \gls{DNS} più veloce al mondo secondo \cite{DNSPerf2025}.
@@ -507,7 +510,7 @@ Sulla base di questa suddivisione logica, ClientShield è stato organizzato in q
 	questo modulo è dedicato alla creazione dell'installer del software.
 	Si occuperà di automatizzare l'installazione del servizio e dell'interfaccia, garantendone il funzionamento corretto.
 \end{itemize}
-L'organizzazione del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
+L'organizzazione della directory del progetto finale seguirà il più possibile la struttura illustrata in figura \ref{fig:struttura-directory-clientshield}.
 
 \begin{figure}[H]
 	\centering
@@ -590,6 +593,8 @@ Nella nuova versione di ClientShield, invece, si è deciso di implementare un se
 
 In sintesi, il nuovo design del servizio Windows prevede l'implementazione di un server named pipe che, su comando dell'utente, interagisca con il servizio di protezione per avviare l'esecuzione di un server \gls{DNS} locale, impostandolo come predefinito di sistema, oppure interromperla.
 
+Tutti i pattern utilizzati nella progettazione del servizio Windows (sezioni \ref{ssec:analisi-protezione} e \ref{ssec:analisi-server-dns}) fanno riferimento al libro \cite{GoF94}.
+
 \subsection{Analisi della protezione}
 \label{ssec:analisi-protezione}
 
@@ -599,14 +604,14 @@ Il server named pipe dovrebbe gestire le API FlashStart, occupandosi della regis
 Inoltre, deve monitorare lo stato del server \gls{DNS} e interagire con esso, permettendone il riavvio e l'arresto automatici o su richiesta. 
 In aggiunta, il servizio deve occuparsi anche della gestione delle credenziali, memorizzando il codice utente fornito durante la registrazione e garantendo il ripristino della sessione al riavvio del dispositivo.
 
-Per una corretta delegazione delle responsabilità e per ottenere semplicità nella comunicazione con diversi componenti, è stato sfruttato il pattern \textit{Facade}, definito in \cite{GoF94}.
+Per una corretta delegazione delle responsabilità e per ottenere semplicità nella comunicazione con diversi componenti, è stato sfruttato il pattern \textit{Facade}.
 Questo pattern fornisce una semplice interfaccia che consente la gestione di funzionalità distribuite su più classi.
 
 Dalla struttura delle classi, illustrata in figura \ref{fig:protezione-facade-pattern}, è possibile constatare che la classe \texttt{ServerNamedPipe} si occupa esclusivamente di ricevere ed elaborare le richieste da parte del client, delegando l'esecuzione di qualsiasi operazione alla classe \texttt{ProtectionManager}.
 Quest'ultima funge da punto di raccordo tra le diverse funzionalità offerte dal software, gestendole in maniera organizzata, permettendo una granularità maggiore che facilita la manutenzione del codice.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/protezione-facade-pattern.png}
+	\includegraphics[width=1.0\textwidth]{figures/protezione-facade-pattern.png}
 	\caption{Facade pattern per la gestione della protezione}
 	\label{fig:protezione-facade-pattern}
 \end{figure}
@@ -664,7 +669,7 @@ Il suo compito è essenzialmente quello di permettere all'utilizzatore l'accesso
 L'interfaccia agisce come client nella connessione tramite named pipe, inviando le richieste effettuate dall'utente e attendendo la risposta dal server.
 
 Poiché il software è soltanto un prototipo, l'obiettivo dell'analisi è proporre una soluzione che permetta una facile modifica della parte visiva.
-L'interfaccia sarà sviluppata molto semplicemente, dando solo una rapida rappresentazione grafica ai comandi che è possibile effettuare.
+L'interfaccia sarà sviluppata molto semplicemente, dando solo una rapida rappresentazione grafica ai comandi implementati.
 Dal punto di vista aziendale, il prototipo risulta efficace se la modifica dell'interfaccia, che verrà senza dubbio sottoposta al consiglio di grafici esperti, richiede poche o nulle modifiche di backend.
 
 \subsection{Model-View-Presenter}
@@ -934,11 +939,11 @@ I test si sono concentrati principalmente sulla verifica del corretto funzioname
 Tuttavia, una volta appurato il corretto funzionamento del prototipo, sono stati prodotti dei dati quantitativi sull'efficienza del filtro.
 
 Per lo svolgimento dei test è stato utilizzato il sistema \gls{WSL}, che ha permesso di eseguire script Bash in ambiente Windows.
-I test sono stati eseguiti su un computer con CPU Intel(R) Core(TM) i5-10210U CPU da 1.60GHz e 8GB di memoria RAM, connesso ad internet tramite cavo ethernet.
+I test sono stati eseguiti su un computer con CPU Intel(R) Core(TM) i5-10210U da 1.60GHz e 8GB di memoria RAM, connesso ad internet tramite cavo ethernet.
 
-La raccolta dei dati è stata effettuata mediante uno script bash che esegue il comando \texttt{dig} per visualizzare i tempi di risposta del \gls{DNS} di sistema sui primi mille domini appartenenti ad una lista online\footnote{Lista di domini: \url{https://github.com/fgont/domain-list/blob/master/majestic-domains.txt}}.
+La raccolta dei dati è stata effettuata mediante uno script bash che esegue il comando \texttt{dig} per visualizzare i tempi di risposta del \gls{DNS} di sistema sui primi mille domini appartenenti ad una lista online\footnote{Lista di domini utilizzata: \url{https://github.com/fgont/domain-list/blob/master/majestic-domains.txt}}.
 Lo script calcola il tempo di risposta medio, minimo e massimo, fornendo informazioni anche sul numero di query perse.
-Lo script è stato eseguito inizialmente configurando il DNS statico sull’indirizzo 1.1.1.1, il server pubblico di Cloudflare\footnote{Sito ufficiale Cloudflare: \url{https://www.cloudflare.com}}. Successivamente, è stata attivata la protezione tramite ClientShield, testando sia la nuova implementazione basata su \gls{DoH} sia la versione precedente, che utilizza una \gls{VPN}.
+La sua esecuzione è avvenuta inizialmente configurando il DNS statico sull’indirizzo 1.1.1.1, il server pubblico di Cloudflare\footnote{Sito ufficiale Cloudflare: \url{https://www.cloudflare.com}}. Successivamente, è stata attivata la protezione tramite ClientShield, testando sia la nuova implementazione basata su \gls{DoH} sia la versione precedente, che utilizza una \gls{VPN}.
 In ognuno dei tre scenari sono stati attivati cinque diversi processi in background che hanno eseguito lo script e trascritto i risultati su dei file di log.
 I dati finali dei test sono riportati nella tabella \ref{tab:dns-tests}.
 
@@ -982,6 +987,9 @@ Questi test presentano alcune limitazioni, poiché sono stati eseguiti su un num
 Tuttavia sono ritenuti sufficienti a verificare il buon funzionamento del prototipo, che fornisce risposte in tempi, in media, simili ad uno dei \gls{DNS} più utilizzati al mondo e sempre minori rispetto alla precedente implementazione.
 I tempi di risposta pari a 0ms registrati nei test con il \gls{DNS} di CloudFlare sono probabilmente dovuti all'utilizzo della cache, una funzionalità non implementata nel prototipo di ClientShield.
 La differenza tra i tempi massimi di risposta è invece dovuta, presumibilmente, a diverse configurazioni tra il \gls{DNS} pubblico e quello realizzato in questa tesi.
+Nella tabella è inoltre riportata la perdita sistematica di otto query per tutti i \gls{DNS} utilizzati, ciò è dovuto alla lista di domini sfruttata.
+L'ultimo aggiornamento della lista è, infatti, datato 2017 al momento della scrittura di questa tesi.
+Alcuni dei domini utilizzati non esistono più, ad esempio l'indirizzo storify.com apparteneva ad un social network chiuso nel 2018.
 
 \chapter{Conclusioni e sviluppi futuri}
 
@@ -1009,10 +1017,49 @@ Infine, un ultimo aspetto rilevante sarebbe la valutazione di un'effettiva imple
 \backmatter
 
 \bibliographystyle{alpha}
+\bibstyle{alpha}
 \bibliography{bibliography}
 
 \begin{acknowledgements} % this is optional
-Optional. Max 1 page.
+Al termine di questa tesi desidero, innanzitutto, ringraziare il mio relatore Mirko Viroli e il mio correlatore Nicolas Farabegoli, che hanno seguito con attenzione e grande disponibilità l'intero processo di produzione di questo elaborato, a partire dalla scelta dell'argomento.
+
+Ci tengo inoltre a ringraziare Francesco Collini, CEO di FlashStart, per avermi non soltanto dato l'opportunità di sviluppare questo appassionante progetto, ma anche per avermi offerto supporto ed incoraggiamento quando serviva.
+Insieme a lui non posso non ringraziare gli altri colleghi di FlashStart, che mi hanno affiancato durante il tirocinio e lo sviluppo della tesi, rendendo il cammino decisamente più leggero.
+
+Ringrazio tanto tutti i miei amici di Fano, tutti quelli che mi sono vicini da anni e che hanno reso l'intero percorso di studi stupendo, non soltanto fatto di libri, ma di legami.
+Di qualsiasi momento passato insieme ho nostalgia.
+
+Un grande grazie agli amici dell'università, con cui ho sostenuto esami, progetti e bellissime giornate.
+Senza i quali il campus è decisamente più triste e grazie ai quali ho a cuore Cesena come se fosse la mia città.
+
+Ringrazio poi Federica e Martina, i cui nomi non potevano essere semplicemente mischiati nel gruppo.
+Grazie di cuore per l'interesse dimostrato in questi anni, per esserci state, anche solo con una semplice parola, con un messaggio o con un abbraccio quando serviva.
+
+Un grandissimo grazie a Matilde, che in questi tre anni mi ha accompagnato mano nella mano fino a al raggiungimento di questo traguardo.
+Qualche riga non basta per riconoscere il valore dei piccoli gesti, delle belle parole e dei sentimenti dimostrati fino ad oggi.
+
+Un grazie dal cuore a Javid, gemello più che amico, con cui ho condiviso ogni singola esperienza, studi, amicizie, gioie e la cui presenza è una certezza costante da quando eravamo bambini.
+Terminata questa tesi, a malincuore prendo coscienza del fatto che il percorso di studi assieme è terminato, ma ricordo di quando, con le mani piccole piccole digitavo il tuo numero sul telefono di casa, che ancora ricordo a memoria, e stavamo in chiamata ore.
+Confido che, anche se le nostre strade, magari, si separeranno e saremo troppo distanti per vederci, non ci scorderemo di restar bambini quel tanto che basta per sentirci ancora, a parlare di niente per ore.
+
+A Valentina, Matteo, Filippo e Martina, devo, non solo questo piccolo successo, ma l'intera vita.
+Tutto ciò che ho imparato da voi tutti è indescrivibile, tutto ciò che vi devo è inimmaginabile.
+Il sangue, da solo, non basta a tenere legata la famiglia, ciò che fa la differenza è la certezza che, nonostante la distanza, nonostante tutto, possiamo sempre contare l'uno sull'altro.
+Vivendo assieme ho senza dubbio imparato che l'amore va oltre le differenze, oltre le difficoltà e unisce in un legame unico, assoluto e indissolubile, che è l'unica ragione che trovo se cerco di spiegarmi come abbiamo fatto ad attraversare certi momenti della nostra vita.
+In questo momento in cui a poco a poco, ognuno di noi sta prendendo la sua strada, desidero augurarci il meglio.
+
+Ringrazio il mio papà, che, nonostante le poche parole e i suoi strani modi di dimostrare affetto, in fondo so essere fiero di me.
+Ricordo senza dubbio e con molto calore quando da bambino correvo nel letto arrabbiato e tu ti sedevi sul bordo a consolarmi, accarezzandomi la testa con i tuoi manoni.
+
+Mi si stringe il cuore mentre ringrazio la mia mamma, che non ha mai mancato di farmi sentire tutto il suo immenso amore.
+Non ricordo nemmeno un giorno della mia vita in cui, entrando dentro casa, non sono stato accolto da un tuo abbraccio.
+Non esiste un mio traguardo che tu non abbia celebrato e non esiste gioia se non posso condividerla con te.
+Ogni carezza, ogni bacio ed ogni abbraccio rimarranno per sempre impressi nella mia memoria.
+
+Infine, vorrei lasciare un piccolo spazio in fondo per ringraziare la mia nonna, il cui amore e orgoglio sento attraversare il tempo e raggiungermi.
+
+
+
 \end{acknowledgements}
 
 \end{document}

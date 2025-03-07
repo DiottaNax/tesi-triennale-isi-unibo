@@ -775,7 +775,7 @@ Per questo motivo entrambi i task sono creati specificando alla \class{TaskFacto
 Per gestire in maniera ottimale la concorrenza causata dai task, il server mantiene una coda di messaggi bloccante.
 La coda consente a \class{SocketListener} e \class{DnsResolver} di cooperare tra loro in modo sicuro, evitando race conditions.
 
-La routine di ascolto delle richieste è completamente affidata alla classe \class{UdpListener}, un'implementazione dell'interfaccia \class{SocketListener} che utilizza il client UDP delle librerie di sistema per monitorare la porta 53, dedicata alle comunicazioni \gls{DNS}.
+La routine di ascolto delle richieste è completamente affidata a \class{UdpListener}, un'implementazione dell'interfaccia \class{SocketListener} che utilizza il client UDP delle librerie di sistema per monitorare la porta 53, dedicata alle comunicazioni \gls{DNS}.
 Infatti, come riportato in \cite{RFC1035}: ``I messaggi inviati utilizzando UDP usano la porta server 53 (decimale). [...] UDP non è accettabile per i trasferimenti di zona, ma è il metodo raccomandato per le query standard su Internet.''.
 
 Alla ricezione di una richiesta \gls{DNS}, \class{UdpListener} la aggiunge alla coda di messaggi.
@@ -800,7 +800,7 @@ Infine, all'arresto, il server si occupa di interrompere correttamente l'esecuzi
 
 \section{Implementazione progetto Client}
 
-Sebbene si sia discusso del possibile sviluppo di un'interfaccia grafica multi-piattaforma, il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
+Sebbene si sia discusso del possibile sviluppo di un'interfaccia grafica multi-piat-taforma, il prototipo di ClientShield utilizza la libreria \gls{WPF}, specifica per ambienti Windows.
 La scelta è motivata principalmente dalla maggiore familiarità con la libreria, che offre un'ottima integrazione con .NET.
 Tuttavia, è doveroso sottolineare che il progetto segue l'architettura software analizzata in sezione \ref{ssec:analisi-mvp}.
 Pertanto le modifiche necessarie per un eventuale sviluppo multi-platform riguarderanno la semplice sostituzione delle classi strettamente riguardanti l'interfaccia grafica, ossia le \class{View}.
@@ -879,7 +879,7 @@ I dati finali dei test sono riportati nella tabella \ref{tab:dns-tests}.
 	\centering
 	\renewcommand{\arraystretch}{1.3} % Spaziatura tra le righe
 	\setlength{\tabcolsep}{10pt} % Spaziatura tra le colonne
-	\begin{tabular}{lcccc}
+	\begin{tabular}{ccccc}
 		\toprule
 		\textbf{Test} & \textbf{T.Medio (ms)} & \textbf{T.Min (ms)} & \textbf{T.Max (ms)} & \textbf{Query Perse} \\
 		\midrule

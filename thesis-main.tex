@@ -318,8 +318,8 @@ Come precedentemente anticipato, la versione business dell'applicazione garantir
 	Dopo la registrazione dovrà essere possibile ottenere informazioni sull'acquirente, come il nome scelto per il software e il logo da applicare.
 	L'interfaccia grafica dell'applicazione dovrà adattarsi alle informazioni ottenute durante la registrazione.
 	
-	\itemdef{Controllo di stato periodico:}
-	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà repe-rire più informazioni.
+	\itemdef{Controllo di stato:}
+	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà reperire più informazioni.
 	I dati supplementari, come ad esempio:
 	\begin{itemize}
 		\item informazioni sul blocco remoto
@@ -617,8 +617,8 @@ Si compone di tre elementi principali:
 	Tipicamente è un componente totalmente passivo, le cui funzionalità sono ridotte al minimo e contengono poca, o nessuna logica.
 	Non comunica direttamente con la parte di \textit{Model}, tutti i dati passano attraverso il \textit{Presenter}, lasciando alla \textit{View} il solo compito di rappresentarli visivamente.
 	
-	\itemdef{Presenter:} implementa l'intera logica di presentazione, occupandosi
-	di reperire i dati dal \textit{Model} ed eventualmente modificarli in modo che
+	\itemdef{Presenter:}
+	implementa l'intera logica di presentazione, occupandosi di repe-rire i dati dal \textit{Model} ed eventualmente modificarli in modo che
 	possano essere rappresentati.
 	Il \textit{Presenter}, inoltre, riceve i dati in input dalla \textit{View}, li valida e si occupa della loro elaborazione.
 	Svolge il ruolo di mediatore tra \textit{Model} e \textit{View}, occupandosi di verificare sempre la coerenza tra dati e rappresentazione.
@@ -733,7 +733,7 @@ Questa classe funge da punto di raccordo tra le classi che offrono i suddetti se
 	\itemdef{DnsServer:} classe dedicata alla gestione del server \gls{DNS} locale, viene inizializzato da \class{ProtectionManager} all'avvio della protezione.
 \end{itemize}
 
-\paragraph {CredentialManager} utilizza il gestore di credenziali Windows per l'archiviazione del Client ID, cioè il codice utente univoco necessario per l'autenticazione con i server FlashStart.
+\paragraph {CredentialManager} utilizza il gestore di credenziali Windows per l'archiviazio-ne del Client ID, cioè il codice utente univoco necessario per l'autenticazione con i server FlashStart.
 Questa classe è sviluppata come wrapper dell'omonimo modulo appartenente alla libreria Meziantou.Framework.Win32, gestendo automaticamente le configurazioni necessarie per consentire una più facile interazione da parte di \class{ProtectionManager}.
 I metodi esposti consentono in particolare la registrazione, l'eliminazione, l'aggiornamento e la visualizzazione (se presente) del codice utente sul dispositivo.\\
 
@@ -746,7 +746,7 @@ Il server \gls{DNS} rappresenta il cuore del progetto e la sua implementazione �
 È di fondamentale importanza aderire alla struttura proposta in fase di analisi e rendere il codice chiaro ed organizzato, in modo tale da facilitarne la modifiche e, soprattutto, l'estensione.
 L'implementazione descritta di seguito segue le linee guida delineate nella sezione \ref{ssec:analisi-server-dns}, sfruttando i pattern progettuali individuati per ottenere gli obiettivi di manutenibilità, estensibilità ed efficienza.
 
-ClientShield utilizza \class{StubbornDnsServer} come server \gls{DNS}.
+ClientShield usa \class{StubbornDnsServer} come server \gls{DNS}.
 Questa classe funge da decorator per l'implementazione di base \class{DnsServer}, utilizzando il pattern per estendere le funzionalità del server \gls{DNS}, consentendogli di imporsi come predefinito di sistema.
 Per consentire l'operazione, \class{StubbornDnsServer} si avvale dei metodi esposti dalla classe \class{NetworkManager}, responsabile della gestione delle impostazioni di rete.  
 

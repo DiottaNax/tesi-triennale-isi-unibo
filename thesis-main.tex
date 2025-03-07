@@ -9,10 +9,6 @@
 \usepackage{notes}
 \usepackage{shortcuts}
 \usepackage{float}
-\usepackage{pgfplots}
-
-\tolerance=1000
-\pgfplotsset{compat=1.18}
 
 \newcommand{\acknowledgementsname}{Riconoscimenti}
 \renewcommand{\chaptername}{Capitolo} % Per i capitoli
@@ -294,7 +290,7 @@ Nella sua implementazione prototipale, ClientShield dovrà:
 	ClientShield ricorderà le credenziali attive prima dello spegnimento, riattivando automaticamente la protezione all'accensione con le stesse.
 	
 \end{itemize}
-Queste funzionalità costituiscono il comportamento complessivo del prototipo sviluppato in questo progetto.
+Queste funzionalità costituiscono il comportamento complessivo del prototipo svi-luppato in questo progetto.
 L'obiettivo essenziale è dunque garantire la protezione del dispositivo, fungendo da intermediario tra l'endpoint e i server di FlashStart.
 Con lo scopo di descrivere in modo semplice l'interazione tra utente, ClientShield e server \gls{DNS} FlashStart è stato realizzato il diagramma in figura \ref{fig:interazione-utente-software-server}.
 
@@ -323,7 +319,7 @@ Come precedentemente anticipato, la versione business dell'applicazione garantir
 	L'interfaccia grafica dell'applicazione dovrà adattarsi alle informazioni ottenute durante la registrazione.
 	
 	\itemdef{Controllo di stato periodico:}
-	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà reperire più informazioni.
+	questa operazione è già presente in parte nell'implementazione prototipale, tuttavia nello sviluppo business dovrà repe-rire più informazioni.
 	I dati supplementari, come ad esempio:
 	\begin{itemize}
 		\item informazioni sul blocco remoto
@@ -461,7 +457,7 @@ L'organizzazione della directory del progetto finale seguirà il più possibile 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.3\textwidth]{figures/directory.png}
+	\includegraphics[width=0.25\textwidth]{figures/directory.png}
 	\caption{Struttura dei sotto-progetti di ClientShield}
 	\label{fig:struttura-directory-clientshield}
 \end{figure}
